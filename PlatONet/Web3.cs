@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Nethereum.JsonRpc.Client;
 using System.Text;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace PlatONet
 {
@@ -98,5 +99,173 @@ namespace PlatONet
         {
             return client.SendRequestAsync<string>("platon_gasPrice");
         }
+        public List<string> PlatonAccounts()
+        {
+            var result = PlatonAccountsAsync();
+            result.Wait();
+            return result.Result;
+        }
+        public Task<List<string>> PlatonAccountsAsync()
+        {
+            return client.SendRequestAsync<List<string>>("platon_accounts");
+        }
+        public BigInteger PlatonBlockNumber()
+        {
+            var result = PlatonBlockNumberAsync();
+            result.Wait();
+            return Convert.ToUInt64(result.Result, 16);
+        }
+        public Task<string> PlatonBlockNumberAsync()
+        {
+            return client.SendRequestAsync<string>("platon_blockNumber");
+        }
+        public BigInteger PlatonGetBalance(string account, BlockParameter param = null)
+        {
+            var result = PlatonGetBalanceAsync(account, param);
+            result.Wait();
+            return hexString2BigInt(result.Result);            
+        }
+        public Task<string> PlatonGetBalanceAsync(string account, BlockParameter param = null)
+        {
+            if (param == null) param = BlockParameter.DEFAULT;
+            return client.SendRequestAsync<string>("platon_getBalance",null,
+                new object[] { 
+                    account, param.BlockNumber
+                });
+        }
+
+        public string PlatonGetStorageAt(string account, ulong position = 0, BlockParameter param = null)
+        {
+            var result = PlatonGetStorageAtAsync(account, position, param);
+            result.Wait();
+            return result.Result;
+        }
+        public Task<string> PlatonGetStorageAtAsync(string account, ulong position = 0, BlockParameter param = null)
+        {
+            if (param == null) param = BlockParameter.DEFAULT;
+            return client.SendRequestAsync<string>("platon_getStorageAt", null,
+                new object[] { 
+                    account, string.Format("0x{0:X}", position), param.BlockNumber
+                });
+        }
+
+        public ulong PlatonGetBlockTransactionCountByHash(string blockHash)
+        {
+            var result = PlatonGetBlockTransactionCountByHashAsync(blockHash);
+            result.Wait();
+            return Convert.ToUInt64(result.Result, 16);
+        }
+        public Task<string> PlatonGetBlockTransactionCountByHashAsync(string blockHash)
+        {
+            return client.SendRequestAsync<string>("platon_getBlockTransactionCountByHash", null,
+                new object[] {
+                    blockHash
+                });
+        }
+
+        public ulong PlatonGetTransactionCount(string account, BlockParameter param = null)
+        {
+            var result = PlatonGetTransactionCountAsync(account, param);
+            result.Wait();
+            return Convert.ToUInt64(result.Result, 16);
+        }
+
+        public Task<string> PlatonGetTransactionCountAsync(string account, BlockParameter param = null)
+        {
+            if (param == null) param = BlockParameter.DEFAULT;
+            return client.SendRequestAsync<string>("platon_getTransactionCount", null,
+                new object[] {
+                    account, param.BlockNumber
+                });
+        }
+
+        public ulong PlatonGetBlockTransactionCountByNumber(BlockParameter param = null)
+        {
+            var result = PlatonGetBlockTransactionCountByNumberAsync(param);
+            result.Wait();
+            return Convert.ToUInt64(result.Result, 16);
+        }
+
+        public Task<string> PlatonGetBlockTransactionCountByNumberAsync(BlockParameter param = null)
+        {
+            if (param == null) param = BlockParameter.DEFAULT;
+            return client.SendRequestAsync<string>("platon_getBlockTransactionCountByNumber", null,
+                new object[] {
+                    param.BlockNumber
+                });
+        }
+
+        public string PlatonGetCode(string address, BlockParameter param = null)
+        {
+            var result = PlatonGetCodeAsync(address, param);
+            result.Wait();
+            return result.Result;
+        }
+
+        public Task<string> PlatonGetCodeAsync(string address, BlockParameter param = null)
+        {
+            if (param == null) param = BlockParameter.DEFAULT;
+            return client.SendRequestAsync<string>("platon_getCode", null,
+                new object[] {
+                    address, param.BlockNumber
+                });
+        }
+
+        private BigInteger hexString2BigInt(string hexStr)
+        {
+            hexStr = hexStr.ToLower();
+            if (hexStr.StartsWith("0x")) hexStr = hexStr.Remove(0, 2);
+            hexStr = "0" + hexStr;
+            return BigInteger.Parse(hexStr, System.Globalization.NumberStyles.HexNumber);
+        }
+    }
+    /// <summary>
+    /// https://eth.wiki/json-rpc/API#the-default-block-parameter
+    /// </summary>
+    public class BlockParameter
+    {
+        public static BlockParameter EARLIEST = Init("earliest");
+        public static BlockParameter LATEST = Init("latest");
+        public static BlockParameter PENDING = Init("pending");
+        public static BlockParameter DEFAULT = Init("latest");
+
+        public static BlockParameter Init(ulong blockNumber)
+        {
+            return new BlockParameter(blockNumber);
+        }
+        public static BlockParameter Init(string param)
+        {
+            return new BlockParameter(param);
+        }
+
+        //private long blockNumber;
+        public string BlockNumber
+        {
+            get;set;
+        }
+        public BlockParameter(ulong blockNumber)
+        {
+            BlockNumber = blockNumber.ToString();
+        }
+        public BlockParameter(string param)
+        {
+            param = param.ToLower();
+            if (param == "earliest" || param == "pending" || param == "latest") 
+                BlockNumber = param;            
+            else
+            {
+                // default value of the block parameter is latest
+                try
+                {
+                    Convert.ToUInt64(param);
+                    BlockNumber = param;
+                }catch (Exception)
+                {
+                    BlockNumber = "latest";
+                }                
+            }
+                
+        }
+
     }
 }
