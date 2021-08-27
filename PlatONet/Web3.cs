@@ -214,8 +214,7 @@ namespace PlatONet
         public Task<string> PlatonSendRawTransactionAsync(string data)
         {
             if (!data.StartsWith("0x")) data = "0x" + data;
-            return client.SendRequestAsync<string>("platon_sendRawTransaction", null,
-                new object[] { data });
+            return client.SendRequestAsync<string>("platon_sendRawTransaction", null, data);
         }
 
         public string PlatonSendRawTransaction(string data)

@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Credentials.cs" />
+    <Compile Remove="ECKeyPair.cs" />
+    <Compile Remove="Keys.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BouncyCastle.NetCore" Version="1.8.8" />
   </ItemGroup>
 
