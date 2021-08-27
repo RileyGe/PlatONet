@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using PlatONet;
+using Nethereum.RLP;
 
 namespace examples.rpc
 {
@@ -9,7 +10,7 @@ namespace examples.rpc
     {
         public static void Main(string[] args)
         {
-            var platonWeb3 = new Web3("http://47.241.98.219:6789");
+            var platonWeb3 = new Web3("http://47.241.98.219:6789"); // dev net of platon
             //var version = platonWeb3.ClientVersion();
             //Console.WriteLine(version);
             //var sha3 = platonWeb3.Web3Sha3("");

@@ -7,6 +7,7 @@ namespace examples
         static void Main(string[] args)
         {
             rpc.Basic.Main(args); return;
+            //rpc.Transfer.Main(args); return;
         }
     }
 }
