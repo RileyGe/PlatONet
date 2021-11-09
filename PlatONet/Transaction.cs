@@ -29,10 +29,10 @@ namespace PlatONet
         {
 
         }
-        public static Transaction GetPaymentTransaction(string to, long amount, long gasPrice = 0, long gasLimit = 0, string msg = "", long nonce = -1, long chainId = 210309)
-        {
+        //public static Transaction GetPaymentTransaction(string to, long amount, long gasPrice = 0, long gasLimit = 0, string msg = "", long nonce = -1, long chainId = 210309)
+        //{
 
-        }
+        //}
     }
     
     //class Transaction : LegacyTransactionChainId
