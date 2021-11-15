@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Utilities.Encoders;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -45,6 +46,10 @@ namespace PlatONet
             if (_hrp != null && _hrp.Length > 0 && _bytes != null && _bytes.Length > 0)
                 return Bech32Engine.Encode(_hrp, _bytes);
             else return "";
+        }
+        public string ToEthereumAddress()
+        {
+            return "0x" + Hex.ToHexString(_bytes);
         }
 
         public override int GetHashCode()

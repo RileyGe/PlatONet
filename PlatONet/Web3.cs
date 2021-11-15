@@ -1,18 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using Nethereum.JsonRpc.Client;
-using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using Nethereum.Contracts;
+using Nethereum.RPC;
+using Nethereum.RPC.TransactionManagers;
 
 namespace PlatONet
 {
     public class Web3
     {
-        private RpcClient client;
-        public Web3(string url = "http://localhost:6789") 
+        private IClient client;
+        private ITransactionManager transactionManager;
+        //private IAccount account;
+        public Web3(string url = "http://localhost:6789", string privateKey = null) 
         {
             client = new RpcClient(new Uri(url));
+            
+            if(privateKey != null && privateKey.Length > 0)
+            {
+                var account = new Nethereum.Web3.Accounts.Account(privateKey);
+                transactionManager = account.TransactionManager;
+                transactionManager.Client = client;
+            }else
+                transactionManager = new TransactionManager(client);
         }
         public string ClientVersion()
         {
@@ -252,6 +264,16 @@ namespace PlatONet
             hexStr = "0" + hexStr;
             return BigInteger.Parse(hexStr, System.Globalization.NumberStyles.HexNumber);
         }
+        public Contract PlatonGetContract(string abi, string contractAddress)
+        {
+            //client.
+            //var ethService = new EthApiService(client, transactionManager);
+            //var id = ethService.ChainId;
+            //var result = id.SendRequestAsync();
+            
+            var contract = new Contract(new EthApiService(client, transactionManager), abi, contractAddress);
+            return contract;
+        }
     }
     /// <summary>
     /// https://eth.wiki/json-rpc/API#the-default-block-parameter
@@ -300,6 +322,5 @@ namespace PlatONet
             }
                 
         }
-
     }
 }

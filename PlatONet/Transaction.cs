@@ -161,7 +161,7 @@ namespace PlatONet
         public byte[] Sign(EthECKey key)
         {
             if (paramsChanged)
-                rawTranction = new LegacyTransactionChainId(_to.ToString(), _amount, _nonce, _gasPrice, _gasLimit, _data, _chainId);
+               rawTranction = new LegacyTransactionChainId(_to.Bytes.ToHex(), _amount, _nonce, _gasPrice, _gasLimit, _data, _chainId);
             rawTranction.Sign(key);
             _signedTransaction = rawTranction.GetRLPEncoded();
             return _signedTransaction;
