@@ -158,13 +158,13 @@ namespace PlatONet
             _data = data;
             _chainId = chainId;
         }
-        public byte[] Sign(EthECKey key)
+        public EthECDSASignature Sign(EthECKey key)
         {
             if (paramsChanged)
-               rawTranction = new LegacyTransactionChainId(_to.Bytes.ToHex(), _amount, _nonce, _gasPrice, _gasLimit, _data, _chainId);
+               rawTranction = new LegacyTransactionChainId(_to.Bytes?.ToHex(), _amount, _nonce, _gasPrice, _gasLimit, _data, _chainId);
             rawTranction.Sign(key);
-            _signedTransaction = rawTranction.GetRLPEncoded();
-            return _signedTransaction;
+            _signedTransaction = rawTranction.GetRLPEncoded();            
+            return rawTranction.Signature;
         }
         //public List<object> ToParamsList()
         //{
