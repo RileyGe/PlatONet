@@ -23,6 +23,7 @@ namespace PlatONet
                 client = value;
             }
         }
+        public Account Account { get; set; }
         public string ProtocolVersion()
         {      
             //Nethereum.Hex.HexConvertors.Extensions.HexBigIntegerConvertorExtensions.
@@ -159,13 +160,35 @@ namespace PlatONet
                     address, param.BlockNumber
                 });
         }
+        public string SendTransaction(Transaction trans)
+        {
+            var result = SendTransactionAsync(trans);
+            result.Wait();
+            return result.Result;
+        }
+        public Task<string> SendTransactionAsync(Transaction trans)
+        {
+            //if (!data.StartsWith("0x")) data = "0x" + data;
+            if (Account == null) throw new Exception("Please initialize Account before SendTransaction.");
+            trans.Sign(Account);
+            return SendRawTransactionAsync(trans.SignedTransaction.ToHex());
+        }
+        public Task<string> SendRawTransactionAsync(string data)
+        {
+            if (!data.StartsWith("0x")) data = "0x" + data;
+            return ExcuteCommandAsync<string>(ApiMplatonods.platon_sendRawTransaction.ToString(), data);
+        }
+        public string SendRawTransaction(string data)
+        {
+            if (!data.StartsWith("0x")) data = "0x" + data;
+            return ExcuteCommand<string>(ApiMplatonods.platon_sendRawTransaction.ToString(), data);
+        }
         public BigInteger ExcuteCommandParseBigInteger(string method, params object[] paramList)
         {
             var result = ExcuteCommandAsync<string>(method, paramList);
             result.Wait();
             return result.Result.HexToBigInteger(false);
-        }
-        
+        }        
         public Task<T> ExcuteCommandAsync<T>(string method, params object[] paramList)
         {
             return client.SendRequestAsync<T>(method, null, paramList);

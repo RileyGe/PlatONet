@@ -166,6 +166,10 @@ namespace PlatONet
             _signedTransaction = rawTranction.GetRLPEncoded();            
             return rawTranction.Signature;
         }
+        public EthECDSASignature Sign(Account account)
+        {
+            return account.Sign(this);
+        }
         //public List<object> ToParamsList()
         //{
         //    return new List<object>()

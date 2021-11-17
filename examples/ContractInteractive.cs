@@ -82,7 +82,7 @@ namespace examples
             //var privateKey = "d08baac64f52ae1b9c2ea559036650229f07f5d61d869dbb55562a9827fbaeb8";
             var platonKey = new EthECKey(privateKey.HexToByteArray(), true);
             tx.Sign(platonKey);
-            var result2 = platonWeb3.PlatonSendRawTransaction(tx.SignedTransaction.ToHex());
+            var result2 = platonWeb3.PlatON.SendRawTransaction(tx.SignedTransaction.ToHex());
         }
     }
 }
