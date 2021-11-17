@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Nethereum.Hex.HexConvertors.Extensions;
+using Nethereum.RPC.Eth.DTOs;
 
 namespace PlatONet
 {
@@ -69,7 +70,7 @@ namespace PlatONet
         }
         public BigInteger GetBalance(string account, BlockParameter param = null)
         {
-            if (param == null) param = BlockParameter.DEFAULT;
+            param = param ?? BlockParameter.DEFAULT;
             return ExcuteCommandParseBigInteger(ApiMplatonods.platon_getBalance.ToString(),
                 paramList: new object[] {
                     account, param.BlockNumber
@@ -77,7 +78,7 @@ namespace PlatONet
         }
         public Task<string> GetBalanceAsync(string account, BlockParameter param = null)
         {
-            if (param == null) param = BlockParameter.DEFAULT;
+            param = param ?? BlockParameter.DEFAULT;
             return ExcuteCommandAsync<string>(ApiMplatonods.platon_getBalance.ToString(), 
                 paramList: new object[] { 
                     account, param.BlockNumber
@@ -85,7 +86,7 @@ namespace PlatONet
         }
         public string GetStorageAt(string account, ulong position = 0, BlockParameter param = null)
         {
-            if (param == null) param = BlockParameter.DEFAULT;
+            param = param ?? BlockParameter.DEFAULT;
             return ExcuteCommand<string>(ApiMplatonods.platon_getStorageAt.ToString(),
                 paramList: new object[] {
                     account, string.Format("0x{0:X}", position), param.BlockNumber
@@ -93,7 +94,7 @@ namespace PlatONet
         }
         public Task<string> GetStorageAtAsync(string account, ulong position = 0, BlockParameter param = null)
         {
-            if (param == null) param = BlockParameter.DEFAULT;
+            param = param ?? BlockParameter.DEFAULT;
             return ExcuteCommandAsync<string>(ApiMplatonods.platon_getStorageAt.ToString(), 
                 paramList: new object[] {
                     account, string.Format("0x{0:X}", position), param.BlockNumber
@@ -122,7 +123,7 @@ namespace PlatONet
         }
         public Task<string> GetTransactionCountAsync(string account, BlockParameter param = null)
         {
-            if (param == null) param = BlockParameter.DEFAULT;
+            param = param ?? BlockParameter.DEFAULT;
             return ExcuteCommandAsync<string>(ApiMplatonods.platon_getTransactionCount.ToString(), 
                 paramList: new object[] {
                     account, param.BlockNumber
@@ -137,7 +138,7 @@ namespace PlatONet
 
         public Task<string> GetBlockTransactionCountByNumberAsync(BlockParameter param = null)
         {
-            if (param == null) param = BlockParameter.DEFAULT;
+            param = param ?? BlockParameter.DEFAULT;
             return ExcuteCommandAsync<string>(ApiMplatonods.platon_getBlockTransactionCountByNumber.ToString(),
                 paramList: new object[] {
                     param.BlockNumber
@@ -146,7 +147,7 @@ namespace PlatONet
 
         public string GetCode(string address, BlockParameter param = null)
         {
-            if (param == null) param = BlockParameter.DEFAULT;
+            param = param ?? BlockParameter.DEFAULT;
             return ExcuteCommand<string>(ApiMplatonods.platon_getCode.ToString(),
                 paramList: new object[] {
                     address, param.BlockNumber
@@ -154,7 +155,7 @@ namespace PlatONet
         }
         public Task<string> GetCodeAsync(string address, BlockParameter param = null)
         {
-            if (param == null) param = BlockParameter.DEFAULT;
+            param = param ?? BlockParameter.DEFAULT;
             return ExcuteCommandAsync<string>(ApiMplatonods.platon_getCode.ToString(),
                 paramList: new object[] {
                     address, param.BlockNumber
@@ -182,6 +183,189 @@ namespace PlatONet
         {
             if (!data.StartsWith("0x")) data = "0x" + data;
             return ExcuteCommand<string>(ApiMplatonods.platon_sendRawTransaction.ToString(), data);
+        }
+        public object Call(Transaction trans, BlockParameter param = null)
+        {
+            return Call<object>(trans, param);
+        }
+        public Task<object> CallAsync(Transaction trans, BlockParameter param = null)
+        {
+            return CallAsync<object>(trans, param);
+        }
+        public T Call<T>(Transaction trans, BlockParameter param = null)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommand<T>(ApiMplatonods.platon_call.ToString(),
+                paramList: new object[] {
+                    trans.ToDict(), param.BlockNumber
+                });
+        }
+        public Task<T> CallAsync<T>(Transaction trans, BlockParameter param = null)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommandAsync<T>(ApiMplatonods.platon_call.ToString(), 
+                paramList: new object[] { 
+                    trans.ToDict(), param.BlockNumber
+                });
+        }
+        public BigInteger EstimateGas(Transaction trans)
+        {
+            var dict = trans.ToDict();
+            if (dict.ContainsKey("gas")) dict.Remove("gas");
+            return ExcuteCommandParseBigInteger(ApiMplatonods.platon_estimateGas.ToString(),
+                paramList: new object[]{
+                    dict
+                });
+        }
+        public Task<string> EstimateGasAsync(Transaction trans)
+        {
+            var dict = trans.ToDict();
+            if (dict.ContainsKey("gas")) dict.Remove("gas");
+            return ExcuteCommandAsync<string>(ApiMplatonods.platon_estimateGas.ToString(),
+                paramList: new object[]{
+                    dict
+                });
+        }
+        public Block GetBlockByHash(string hash, bool withFullTransactions = true)
+        {
+            return ExcuteCommand<Block>(ApiMplatonods.platon_getBlockByHash.ToString(),
+                paramList: new object[] {
+                    hash, withFullTransactions
+                });
+        }
+        public BlockWithTransactions GetBlockWithTransactionsByHash(string hash)
+        {
+            return ExcuteCommand<BlockWithTransactions>(ApiMplatonods.platon_getBlockByHash.ToString(),
+                paramList: new object[] {
+                    hash, true
+                });
+        }
+        public BlockWithTransactionHashes GetBlockWithTransactionHashesByHash(string hash)
+        {
+            return ExcuteCommand<BlockWithTransactionHashes>(ApiMplatonods.platon_getBlockByHash.ToString(),
+                paramList: new object[] {
+                    hash, false
+                });
+        }
+        public Task<Block> GetBlockByHashAsync(string hash, bool withFullTransactions = true)
+        {
+            return ExcuteCommandAsync<Block>(ApiMplatonods.platon_getBlockByHash.ToString(),
+                paramList: new object[] { 
+                    hash, withFullTransactions
+                });
+        }
+        public Task<BlockWithTransactions> GetBlockWithTransactionsByHashAsync(string hash)
+        {
+            return ExcuteCommandAsync<BlockWithTransactions>(ApiMplatonods.platon_getBlockByHash.ToString(),
+                paramList: new object[] {
+                    hash, true
+                });
+        }
+        public Task<BlockWithTransactionHashes> GetBlockWithTransactionHashesByHashAsync(string hash)
+        {
+            return ExcuteCommandAsync<BlockWithTransactionHashes>(ApiMplatonods.platon_getBlockByHash.ToString(),
+                paramList: new object[] {
+                    hash, false
+                });
+        }
+        public Block GetBlockByNumber(BlockParameter param = null, bool withFullTransaction = true)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommand<Block>(ApiMplatonods.platon_getBlockByNumber.ToString(),
+                paramList: new object[]
+                {
+                    param.BlockNumber, withFullTransaction
+                });
+        }
+        public BlockWithTransactions GetBlockWithTransactionsByNumber(BlockParameter param = null)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommand<BlockWithTransactions>(ApiMplatonods.platon_getBlockByNumber.ToString(),
+                paramList: new object[] {
+                    param.BlockNumber, true
+                });
+        }
+        public BlockWithTransactionHashes GetBlockWithTransactionHashesByNumber(BlockParameter param = null)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommand<BlockWithTransactionHashes>(ApiMplatonods.platon_getBlockByNumber.ToString(),
+                paramList: new object[] {
+                    param.BlockNumber, false
+                });
+        }
+        public Task<Block> GetBlockByNumberAsync(BlockParameter param = null, bool withFullTransactions = true)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommandAsync<Block>(ApiMplatonods.platon_getBlockByNumber.ToString(),
+                paramList: new object[] {
+                    param.BlockNumber, withFullTransactions
+                });
+        }
+        public Task<BlockWithTransactions> GetBlockWithTransactionsByNumberAsync(BlockParameter param = null)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommandAsync<BlockWithTransactions>(ApiMplatonods.platon_getBlockByNumber.ToString(),
+                paramList: new object[] {
+                    param.BlockNumber, true
+                });
+        }
+        public Task<BlockWithTransactionHashes> GetBlockWithTransactionHashesByNumberAsync(BlockParameter param = null)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommandAsync<BlockWithTransactionHashes>(ApiMplatonods.platon_getBlockByNumber.ToString(),
+                paramList: new object[] {
+                    param.BlockNumber, false
+                });
+        }
+        public Nethereum.RPC.Eth.DTOs.Transaction GetTransactionByBlockHashAndIndex(string hash, uint index = 0)
+        {
+            return ExcuteCommand<Nethereum.RPC.Eth.DTOs.Transaction>(ApiMplatonods.platon_getTransactionByBlockHashAndIndex.ToString(),
+                paramList: new object[]
+                {
+                    hash, string.Format("0x{0:X}", index)
+                });
+        }
+        public Task<Nethereum.RPC.Eth.DTOs.Transaction> GetTransactionByBlockHashAndIndexAsync(string hash, uint index = 0)
+        {
+            return ExcuteCommandAsync<Nethereum.RPC.Eth.DTOs.Transaction>(ApiMplatonods.platon_getTransactionByBlockHashAndIndex.ToString(),
+                paramList: new object[]
+                {
+                    hash, string.Format("0x{0:X}", index)
+                });
+        }
+        public Nethereum.RPC.Eth.DTOs.Transaction GetTransactionByBlockNumberAndIndex(BlockParameter param = null, uint index = 0)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommand<Nethereum.RPC.Eth.DTOs.Transaction>(ApiMplatonods.platon_getTransactionByBlockNumberAndIndex.ToString(),
+                paramList: new object[]
+                {
+                    param.BlockNumber, string.Format("0x{0:X}", index)
+                });
+        }
+        public Task<Nethereum.RPC.Eth.DTOs.Transaction> GetTransactionByBlockNumberAndIndexAsync(BlockParameter param = null, uint index = 0)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommandAsync<Nethereum.RPC.Eth.DTOs.Transaction>(ApiMplatonods.platon_getTransactionByBlockNumberAndIndex.ToString(),
+                paramList: new object[]
+                {
+                    param.BlockNumber, string.Format("0x{0:X}", index)
+                });
+        }
+        public TransactionReceipt GetTransactionReceipt(string hash)
+        {
+            return ExcuteCommand<TransactionReceipt>(ApiMplatonods.platon_getTransactionReceipt.ToString(),
+                paramList: new object[]
+                {
+                    hash
+                });
+        }
+        public Task<TransactionReceipt> GetTransactionReceiptAsync(string hash)
+        {
+            return ExcuteCommandAsync<TransactionReceipt>(ApiMplatonods.platon_getTransactionReceipt.ToString(),
+                paramList: new object[]
+                {
+                    hash
+                });
         }
         public BigInteger ExcuteCommandParseBigInteger(string method, params object[] paramList)
         {

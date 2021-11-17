@@ -101,28 +101,7 @@ namespace PlatONet
         {
             return client.SendRequestAsync<string>("net_peerCount");
         }
-        public BigInteger PlatonEstimateGas(Transaction transaction)
-        {
-            var result = PlatonEstimateGasAsync(transaction);
-            result.Wait();
-            return hexString2BigInt(result.Result);
-        }
-        public Task<string> PlatonEstimateGasAsync(Transaction transaction)
-        {
-            //var tx = new Dictionary<string, string>();
-            //tx.Add("to", "lat1d4vw2qxjg5ldyaqceel3s6ykpljav6hcn0jfmh");
-            //tx.Add("gas", "0x76c0");
-            //tx.Add("gasPrice", "0x9184e72a000");
-            //tx.Add("value", "0x9184e72a");
-            ////tx.Add("data", "");
-            var dict = transaction.ToDict();
-            if (dict.ContainsKey("gas")) dict.Remove("gas");
-            return client.SendRequestAsync<string>("platon_estimateGas", null, 
-                new object[]{
-                    dict
-                });
-            //return new Task<string>(,);
-        }
+        
         
         // platon_sendRawTransaction
         
