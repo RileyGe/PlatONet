@@ -13,7 +13,7 @@ namespace examples
             var platonWeb3 = new Web3("http://35.247.155.162:6789"); // dev net of platon
             //var address = "lat1ljlf4myhux0zahfmlxf79wr7sl8u7pdey88dyp";
             var fromAddress = new Address("lat1d4vw2qxjg5ldyaqceel3s6ykpljav6hcn0jfmh");
-            var nonceNum = (long)platonWeb3.PlatonGetTransactionCount(fromAddress.ToString());
+            var nonceNum = (long)platonWeb3.PlatON.GetTransactionCount(fromAddress.ToString());
             //var nonce = ((int)nonceNum).ToBytesForRLPEncoding();
             var gasPrice = 1000000000;
             var gasLimit = 300000;

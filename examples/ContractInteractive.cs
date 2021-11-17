@@ -13,7 +13,7 @@ namespace examples
         public static void Main(string[] args)
         {
             var privateKey = "d08baac64f52ae1b9c2ea559036650229f07f5d61d869dbb55562a9827fbaeb8";
-            var platonWeb3 = new Web3("http://35.247.155.162:6789", privateKey); // dev net of platon
+            var platonWeb3 = new Web3("http://35.247.155.162:6789"); // dev net of platon
             var abi = @"[
         {
           ""constant"": false,
@@ -73,7 +73,7 @@ namespace examples
             //    gas.Result, null, null, "rgrgrg");
             var input = setNameFunction.CreateTransactionInput(sender.ToEthereumAddress(), gas.Result, null, null, "rgrgrg");
             var data = input.Data;
-            var nonceNum = (long)platonWeb3.PlatonGetTransactionCount(sender.ToString());
+            var nonceNum = (long)platonWeb3.PlatON.GetTransactionCount(sender.ToString());
             var gasPrice = 1000000000;
             Transaction tx = new Transaction(contractAddress.ToString(), 0, nonceNum, gasPrice);
             tx.GasLimit = gas.Result;
@@ -83,9 +83,6 @@ namespace examples
             var platonKey = new EthECKey(privateKey.HexToByteArray(), true);
             tx.Sign(platonKey);
             var result2 = platonWeb3.PlatonSendRawTransaction(tx.SignedTransaction.ToHex());
-            //receipt.Wait();
-            //Console.WriteLine(receipt.Result);
-            //var balanceFunction = contract.GetFunction("balanceOf");
         }
     }
 }

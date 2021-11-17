@@ -1,8 +1,7 @@
 # PlatONet
-A dotnet interface for interacting with the PlatON network
 PlatONet是PlatON网络的.dotnet SDK。该SDK基于.net standard 2.0，具有良好的跨平台性能。
 
-PlatONet主要依赖于BouncyCastle和Nethereum.Web3两个项目。
+PlatONet主要依赖于BouncyCastle和Nethereum两个开源项目。
 # 使用教程
 
 ## 1. 从源码编译使用
@@ -23,7 +22,7 @@ PlatONet主要依赖于BouncyCastle和Nethereum.Web3两个项目。
 
 如果您使用Visual Studio 2019作为开发工具，您可以通过**生成->生成项目**来进行项目生成，也可以在命令行中使用 `dotnet build` 来生成项目。
 
-## 1.4. 运行示例
+### 1.4. 运行示例
 
 为了帮助大家更快的了解如何使用PlatONet，特编写了示例。里面包含了查询信息、转账、智能合约部署、智能合约调用等基本操作，大家可以自行探索使用。
 
@@ -32,6 +31,10 @@ PlatONet主要依赖于BouncyCastle和Nethereum.Web3两个项目。
 NuGet包会在第一完整功能版本1.0后开始提供，在项目版本没有达到1.0之前，请使用前文所述的**从源码编译使用**章节中所述的方法使用本项目。
 
 ## 3. 使用教程
+
+1. [使用PlatONet连接PlatON网络并查询基本信息](tutorials/basic.md)
+
+
 
 PlatONet最核心的部分由三个类构成：Address、Account、Web3。这三个类分别介绍如下：
 

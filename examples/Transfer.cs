@@ -4,7 +4,7 @@ using Nethereum.Signer;
 using System;
 using Nethereum.RLP;
 
-namespace examples.rpc
+namespace examples
 {
     public class Transfer
     {
@@ -14,7 +14,7 @@ namespace examples.rpc
             var address = new Address("lat1ljlf4myhux0zahfmlxf79wr7sl8u7pdey88dyp");
             var fromAddress = new Address("lat1d4vw2qxjg5ldyaqceel3s6ykpljav6hcn0jfmh");
             var amount = ((long)1e18).ToBytesForRLPEncoding();
-            var nonceNum = platonWeb3.PlatonGetTransactionCount(fromAddress.ToString());
+            var nonceNum = platonWeb3.PlatON.GetTransactionCount(fromAddress.ToString());
             var nonce = ((int)nonceNum).ToBytesForRLPEncoding();
             var gasPrice = 1000000000.ToBytesForRLPEncoding();
             var gasLimit = 21000.ToBytesForRLPEncoding();

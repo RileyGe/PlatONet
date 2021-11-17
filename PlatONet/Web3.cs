@@ -12,19 +12,39 @@ namespace PlatONet
     public class Web3
     {
         private IClient client;
-        private ITransactionManager transactionManager;
+        public IClient Client
+        {
+            get
+            {
+                return client;
+            }
+            set
+            {
+                client = value;
+            }
+        }
+        public PlatON PlatON { get; set; }
+        //private ITransactionManager transactionManager;
         //private IAccount account;
-        public Web3(string url = "http://localhost:6789", string privateKey = null) 
+        public Web3(string url = "http://localhost:6789"/*, string privateKey = null*/) 
         {
             client = new RpcClient(new Uri(url));
+            Init(client);
             
-            if(privateKey != null && privateKey.Length > 0)
+            //if(privateKey != null && privateKey.Length > 0)
+            //{
+            //    var account = new Nethereum.Web3.Accounts.Account(privateKey);
+            //    transactionManager = account.TransactionManager;
+            //    transactionManager.Client = client;
+            //}else
+            //    transactionManager = new TransactionManager(client);
+        }
+        private void Init(IClient client)
+        {
+            PlatON = new PlatON()
             {
-                var account = new Nethereum.Web3.Accounts.Account(privateKey);
-                transactionManager = account.TransactionManager;
-                transactionManager.Client = client;
-            }else
-                transactionManager = new TransactionManager(client);
+                Client = client
+            };
         }
         public string ClientVersion()
         {
@@ -81,70 +101,6 @@ namespace PlatONet
         {
             return client.SendRequestAsync<string>("net_peerCount");
         }
-        public string PlatonProtocolVersion()
-        {
-            var result = PlatonProtocolVersionAsync();
-            result.Wait();
-            return result.Result;
-        }
-        public Task<string> PlatonProtocolVersionAsync()
-        {
-            return client.SendRequestAsync<string>("platon_protocolVersion");
-        }
-        public bool PlatonSyncing()
-        {
-            var result = PlatonSyncingAsync();
-            result.Wait();
-            return result.Result;
-        }
-        public Task<bool> PlatonSyncingAsync()
-        {
-            return client.SendRequestAsync<bool>("platon_syncing");
-        }
-        public ulong PlatonGasPrice()
-        {
-            var result = PlatonGasPriceAsync();
-            result.Wait();
-            return Convert.ToUInt64(result.Result, 16);
-        }
-        public Task<string> PlatonGasPriceAsync()
-        {
-            return client.SendRequestAsync<string>("platon_gasPrice");
-        }
-        public List<string> PlatonAccounts()
-        {
-            var result = PlatonAccountsAsync();
-            result.Wait();
-            return result.Result;
-        }
-        public Task<List<string>> PlatonAccountsAsync()
-        {
-            return client.SendRequestAsync<List<string>>("platon_accounts");
-        }
-        public BigInteger PlatonBlockNumber()
-        {
-            var result = PlatonBlockNumberAsync();
-            result.Wait();
-            return Convert.ToUInt64(result.Result, 16);
-        }
-        public Task<string> PlatonBlockNumberAsync()
-        {
-            return client.SendRequestAsync<string>("platon_blockNumber");
-        }
-        public BigInteger PlatonGetBalance(string account, BlockParameter param = null)
-        {
-            var result = PlatonGetBalanceAsync(account, param);
-            result.Wait();
-            return hexString2BigInt(result.Result);            
-        }
-        public Task<string> PlatonGetBalanceAsync(string account, BlockParameter param = null)
-        {
-            if (param == null) param = BlockParameter.DEFAULT;
-            return client.SendRequestAsync<string>("platon_getBalance", null,
-                new object[] { 
-                    account, param.BlockNumber
-                });
-        }
         public BigInteger PlatonEstimateGas(Transaction transaction)
         {
             var result = PlatonEstimateGasAsync(transaction);
@@ -167,82 +123,7 @@ namespace PlatONet
                 });
             //return new Task<string>(,);
         }
-        public string PlatonGetStorageAt(string account, ulong position = 0, BlockParameter param = null)
-        {
-            var result = PlatonGetStorageAtAsync(account, position, param);
-            result.Wait();
-            return result.Result;
-        }
-        public Task<string> PlatonGetStorageAtAsync(string account, ulong position = 0, BlockParameter param = null)
-        {
-            if (param == null) param = BlockParameter.DEFAULT;
-            return client.SendRequestAsync<string>("platon_getStorageAt", null,
-                new object[] { 
-                    account, string.Format("0x{0:X}", position), param.BlockNumber
-                });
-        }
-
-        public ulong PlatonGetBlockTransactionCountByHash(string blockHash)
-        {
-            var result = PlatonGetBlockTransactionCountByHashAsync(blockHash);
-            result.Wait();
-            return Convert.ToUInt64(result.Result, 16);
-        }
-        public Task<string> PlatonGetBlockTransactionCountByHashAsync(string blockHash)
-        {
-            return client.SendRequestAsync<string>("platon_getBlockTransactionCountByHash", null,
-                new object[] {
-                    blockHash
-                });
-        }
-
-        public ulong PlatonGetTransactionCount(string account, BlockParameter param = null)
-        {
-            var result = PlatonGetTransactionCountAsync(account, param);
-            result.Wait();
-            return Convert.ToUInt64(result.Result, 16);
-        }
-
-        public Task<string> PlatonGetTransactionCountAsync(string account, BlockParameter param = null)
-        {
-            if (param == null) param = BlockParameter.DEFAULT;
-            return client.SendRequestAsync<string>("platon_getTransactionCount", null,
-                new object[] {
-                    account, param.BlockNumber
-                });
-        }
-
-        public ulong PlatonGetBlockTransactionCountByNumber(BlockParameter param = null)
-        {
-            var result = PlatonGetBlockTransactionCountByNumberAsync(param);
-            result.Wait();
-            return Convert.ToUInt64(result.Result, 16);
-        }
-
-        public Task<string> PlatonGetBlockTransactionCountByNumberAsync(BlockParameter param = null)
-        {
-            if (param == null) param = BlockParameter.DEFAULT;
-            return client.SendRequestAsync<string>("platon_getBlockTransactionCountByNumber", null,
-                new object[] {
-                    param.BlockNumber
-                });
-        }
-
-        public string PlatonGetCode(string address, BlockParameter param = null)
-        {
-            var result = PlatonGetCodeAsync(address, param);
-            result.Wait();
-            return result.Result;
-        }
-
-        public Task<string> PlatonGetCodeAsync(string address, BlockParameter param = null)
-        {
-            if (param == null) param = BlockParameter.DEFAULT;
-            return client.SendRequestAsync<string>("platon_getCode", null,
-                new object[] {
-                    address, param.BlockNumber
-                });
-        }
+        
         // platon_sendRawTransaction
         public Task<string> PlatonSendRawTransactionAsync(string data)
         {
@@ -271,7 +152,7 @@ namespace PlatONet
             //var id = ethService.ChainId;
             //var result = id.SendRequestAsync();
             
-            var contract = new Contract(new EthApiService(client, transactionManager), abi, contractAddress);
+            var contract = new Contract(new EthApiService(client/*, transactionManager*/), abi, contractAddress);
             return contract;
         }
     }
