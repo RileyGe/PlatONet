@@ -25,7 +25,8 @@ namespace PlatONet
             }
         }
         public Account Account { get; set; }
-        public HexBigInteger ChainId { get; private set; }
+        public HexBigInteger ChainId { get; set; }
+        public string Hrp { get; set; }
         public PlatONContract GetContract(string abi, string address)
         {
             return new PlatONContract(client, abi, address, this);

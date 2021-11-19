@@ -3,6 +3,7 @@ using Nethereum.JsonRpc.Client;
 using System.Threading.Tasks;
 using Nethereum.Contracts;
 using Nethereum.RPC;
+using Nethereum.Hex.HexTypes;
 
 namespace PlatONet
 {
@@ -23,20 +24,35 @@ namespace PlatONet
         public PlatON PlatON { get; set; }
         //private ITransactionManager transactionManager;
         //private IAccount account;
-        public Web3(string url = "http://localhost:6789"/*, string privateKey = null*/) 
+        public Web3(string url = "http://localhost:6789") : this(url, null, true)
+        { }
+        public Web3(string url, string privateKey, bool initChainIdAndHrp)
         {
             client = new RpcClient(new Uri(url));
-            Init(client);
-            
-            //if(privateKey != null && privateKey.Length > 0)
-            //{
-            //    var account = new Nethereum.Web3.Accounts.Account(privateKey);
-            //    transactionManager = account.TransactionManager;
-            //    transactionManager.Client = client;
-            //}else
-            //    transactionManager = new TransactionManager(client);
+            InitPlatON(client);
+            InitAccount(privateKey);
+            if (initChainIdAndHrp) InitChainIdAndHrp();
         }
-        private void Init(IClient client)
+        public void InitChainIdAndHrp()
+        {
+            PlatON.ChainId = PlatON.GetChainId().ToHexBigInteger();
+            PlatON.Hrp = PlatON.GetAddressHrp();
+        }
+        public void InitAccount(string privateKey)
+        {
+            Account account = null;
+            if(privateKey != null && privateKey.Length > 0)
+            {
+                account = new Account(privateKey);
+            }            
+            InitAccount(account);
+        }
+        public void InitAccount(Account account)
+        {
+            if (PlatON == null) InitPlatON(client);
+            PlatON.Account = account;
+        }
+        private void InitPlatON(IClient client)
         {
             PlatON = new PlatON()
             {

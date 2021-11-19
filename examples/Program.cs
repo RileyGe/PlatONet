@@ -6,12 +6,13 @@ namespace examples
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Convert.ToUInt64("0xaa", 16)); return;
+            //Console.WriteLine(Convert.ToUInt64("0xaa", 16)); return;
             //Basic.Main(args); return;
             //Transfer2.Main(args); return;
             //ContractDeploy.Main(args); return;
             //ContractInteractive.Main(args); return;
             //AccountTest.Main(args); return;
+            Contract3.Main(args); return;
         }
     }
 }
