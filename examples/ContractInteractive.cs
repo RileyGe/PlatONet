@@ -73,8 +73,8 @@ namespace examples
             //    gas.Result, null, null, "rgrgrg");
             var input = setNameFunction.CreateTransactionInput(sender.ToEthereumAddress(), gas.Result, null, null, "rgrgrg");
             var data = input.Data;
-            var nonceNum = (long)platonWeb3.PlatON.GetTransactionCount(sender.ToString());
-            var gasPrice = 1000000000;
+            var nonceNum = platonWeb3.PlatON.GetTransactionCount(sender.ToString());
+            ulong gasPrice = 1000000000;
             Transaction tx = new Transaction(contractAddress.ToString(), 0, nonceNum, gasPrice);
             tx.GasLimit = gas.Result;
             tx.Data = data;

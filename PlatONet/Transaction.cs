@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
+﻿using System.Collections.Generic;
 using Nethereum.Hex.HexConvertors.Extensions;
+using Nethereum.Hex.HexTypes;
 using Nethereum.RLP;
 using Nethereum.Signer;
 
@@ -28,8 +26,8 @@ namespace PlatONet
                 }
             } 
         }
-        private BigInteger _amount;
-        public BigInteger Amount {
+        private HexBigInteger _amount;
+        public HexBigInteger Amount {
             get {
                 return _amount;
             }
@@ -45,8 +43,8 @@ namespace PlatONet
                 }
             } 
         }
-        private BigInteger _nonce;
-        public BigInteger Nonce {
+        private HexBigInteger _nonce;
+        public HexBigInteger Nonce {
             get {
                 return _nonce;
             } 
@@ -59,8 +57,8 @@ namespace PlatONet
                 }
             } 
         }
-        private BigInteger _gasPrice;
-        public BigInteger GasPrice {
+        private HexBigInteger _gasPrice;
+        public HexBigInteger GasPrice {
             get
             {
                 return _gasPrice;
@@ -75,8 +73,8 @@ namespace PlatONet
                 }
             }
         }
-        private BigInteger _gasLimit;
-        public BigInteger GasLimit {
+        private HexBigInteger _gasLimit;
+        public HexBigInteger GasLimit {
             get
             {
                 return _gasLimit;
@@ -107,8 +105,8 @@ namespace PlatONet
                 }
             }
         }
-        private BigInteger _chainId;
-        public BigInteger ChainId {
+        private HexBigInteger _chainId;
+        public HexBigInteger ChainId {
             get
             {
                 return _chainId;
@@ -141,13 +139,13 @@ namespace PlatONet
         //{
             
         //}
-        public Transaction(string to, long amount = 0, long nonce = -1, long gasPrice = 0, long gasLimit = 0,
-            string data = "", long chainId = 210309) : this(to, new BigInteger(amount), new BigInteger(nonce),
-                new BigInteger(gasPrice), new BigInteger(gasLimit), data, new BigInteger(chainId))
+        public Transaction(string to, ulong amount = 0, ulong nonce = 0, ulong gasPrice = 0, ulong gasLimit = 0,
+            string data = "", ulong chainId = 210309) : this(to, amount.ToHexBigInteger(), nonce.ToHexBigInteger(),
+                gasPrice.ToHexBigInteger(), gasPrice.ToHexBigInteger(), data, chainId.ToHexBigInteger())
         { }
-        public Transaction(string to, BigInteger amount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, 
-            string data, BigInteger chainId)
-        {
+        public Transaction(string to, HexBigInteger amount, HexBigInteger nonce, HexBigInteger gasPrice, HexBigInteger gasLimit, 
+            string data, HexBigInteger chainId)
+        {  
             // check address format
             _to = new Address(to);
             _amount = amount;
@@ -190,15 +188,15 @@ namespace PlatONet
             Dictionary<string, string> data = new Dictionary<string, string>();
 
             if (To != null && To.Bytes != null && To.Bytes.Length > 0) data.Add("to", To.ToString());
-            if (Nonce != null && Nonce >= 0) data.Add("nonce", "0x" + Nonce.ToBytesForRLPEncoding().ToHex());
-            if (GasPrice != null && GasPrice > 0) data.Add("gasPrice", "0x" + GasPrice.ToBytesForRLPEncoding().ToHex());
-            if (GasLimit != null && GasLimit > 0) data.Add("gas", "0x" + GasLimit.ToBytesForRLPEncoding().ToHex());
-            if (Amount != null && Amount > 0) data.Add("value", "0x" + Amount.ToBytesForRLPEncoding().ToHex());
+            if (Nonce != null && Nonce.Value >= 0) data.Add("nonce", "0x" + Nonce.HexValue);
+            if (GasPrice != null && GasPrice.Value > 0) data.Add("gasPrice", "0x" + GasPrice.HexValue);
+            if (GasLimit != null && GasLimit.Value > 0) data.Add("gas", "0x" + GasLimit.HexValue);
+            if (Amount != null && Amount.Value > 0) data.Add("value", "0x" + Amount.HexValue);
             if (Data != null && Data.Length > 0) {
                 if (Data.StartsWith("0x")) data.Add("data", Data);
                 else data.Add("data", "0x" + Data);
             }
-            if (ChainId != null && ChainId > 0) data.Add("chainId", "0x" + ChainId.ToBytesForRLPEncoding().ToHex());
+            if (ChainId != null && ChainId.Value > 0) data.Add("chainId", "0x" + ChainId.HexValue);
             return data;
         }
         //public static Transaction GetPaymentTransaction(string to, long amount, long gasPrice = 0, long gasLimit = 0, string msg = "", long nonce = -1, long chainId = 210309)

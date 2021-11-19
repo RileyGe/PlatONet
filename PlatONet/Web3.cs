@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using Nethereum.JsonRpc.Client;
 using System.Threading.Tasks;
-using System.Numerics;
 using Nethereum.Contracts;
 using Nethereum.RPC;
-using Nethereum.RPC.TransactionManagers;
 
 namespace PlatONet
 {
@@ -101,25 +98,13 @@ namespace PlatONet
         {
             return client.SendRequestAsync<string>("net_peerCount");
         }
-        
-        
-        // platon_sendRawTransaction
-        
-
-        private BigInteger hexString2BigInt(string hexStr)
-        {
-            hexStr = hexStr.ToLower();
-            if (hexStr.StartsWith("0x")) hexStr = hexStr.Remove(0, 2);
-            hexStr = "0" + hexStr;
-            return BigInteger.Parse(hexStr, System.Globalization.NumberStyles.HexNumber);
-        }
         public Contract PlatonGetContract(string abi, string contractAddress)
         {
             //client.
             //var ethService = new EthApiService(client, transactionManager);
             //var id = ethService.ChainId;
             //var result = id.SendRequestAsync();
-            
+
             var contract = new Contract(new EthApiService(client/*, transactionManager*/), abi, contractAddress);
             return contract;
         }

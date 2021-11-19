@@ -2,11 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.RPC.Eth.DTOs;
+using Nethereum.Hex.HexTypes;
 
 namespace PlatONet
 {
@@ -25,6 +25,12 @@ namespace PlatONet
             }
         }
         public Account Account { get; set; }
+        public HexBigInteger ChainId { get; private set; }
+        public PlatONContract GetContract(string abi, string address)
+        {
+            return new PlatONContract(client, abi, address, this);
+        }
+        #region rpc requests        
         public string ProtocolVersion()
         {      
             //Nethereum.Hex.HexConvertors.Extensions.HexBigIntegerConvertorExtensions.
@@ -43,13 +49,13 @@ namespace PlatONet
             return ExcuteCommandAsync<bool>(ApiMplatonods.platon_syncing.ToString());
             //return client.SendRequestAsync<bool>("platon_syncing");
         }
-        public BigInteger GasPrice()
+        public HexBigInteger GasPrice()
         {
-            return ExcuteCommandParseBigInteger(ApiMplatonods.platon_gasPrice.ToString());
+            return ExcuteCommand<HexBigInteger>(ApiMplatonods.platon_gasPrice.ToString());
         }
-        public Task<string> GasPriceAsync()
+        public Task<HexBigInteger> GasPriceAsync()
         {
-            return ExcuteCommandAsync<string>(ApiMplatonods.platon_gasPrice.ToString());
+            return ExcuteCommandAsync<HexBigInteger>(ApiMplatonods.platon_gasPrice.ToString());
         }
 
         public List<string> Accounts()
@@ -60,18 +66,18 @@ namespace PlatONet
         {
             return ExcuteCommandAsync<List<string>>(ApiMplatonods.platon_accounts.ToString());
         }
-        public BigInteger BlockNumber()
+        public HexBigInteger BlockNumber()
         {
-            return ExcuteCommandParseBigInteger(ApiMplatonods.platon_blockNumber.ToString());
+            return ExcuteCommand<HexBigInteger>(ApiMplatonods.platon_blockNumber.ToString());
         }
-        public Task<string> BlockNumberAsync()
+        public Task<HexBigInteger> BlockNumberAsync()
         {
-            return ExcuteCommandAsync<string>(ApiMplatonods.platon_blockNumber.ToString());
+            return ExcuteCommandAsync<HexBigInteger>(ApiMplatonods.platon_blockNumber.ToString());
         }
-        public BigInteger GetBalance(string account, BlockParameter param = null)
+        public HexBigInteger GetBalance(string account, BlockParameter param = null)
         {
             param = param ?? BlockParameter.DEFAULT;
-            return ExcuteCommandParseBigInteger(ApiMplatonods.platon_getBalance.ToString(),
+            return ExcuteCommand<HexBigInteger>(ApiMplatonods.platon_getBalance.ToString(),
                 paramList: new object[] {
                     account, param.BlockNumber
                 });
@@ -208,11 +214,11 @@ namespace PlatONet
                     trans.ToDict(), param.BlockNumber
                 });
         }
-        public ulong ChainId()
+        public ulong GetChainId()
         {
             return Convert.ToUInt64(ExcuteCommand<string>(ApiMplatonods.platon_chainId.ToString()), 16);
         }
-        public Task<string> ChainIdAsync()
+        public Task<string> GetChainIdAsync()
         {
             return ExcuteCommandAsync<string>(ApiMplatonods.platon_chainId.ToString());
         }
@@ -224,11 +230,11 @@ namespace PlatONet
         {
             return ExcuteCommandAsync<string>(ApiMplatonods.platon_getAddressHrp.ToString());
         }
-        public BigInteger EstimateGas(Transaction trans)
+        public HexBigInteger EstimateGas(Transaction trans)
         {
             var dict = trans.ToDict();
             if (dict.ContainsKey("gas")) dict.Remove("gas");
-            return ExcuteCommandParseBigInteger(ApiMplatonods.platon_estimateGas.ToString(),
+            return ExcuteCommand<HexBigInteger>(ApiMplatonods.platon_estimateGas.ToString(),
                 paramList: new object[]{
                     dict
                 });
@@ -488,12 +494,12 @@ namespace PlatONet
         {
             return ExcuteCommandAsync<Nethereum.RPC.Eth.DTOs.Transaction[]>(ApiMplatonods.platon_pendingTransactions.ToString());
         }
-        public BigInteger ExcuteCommandParseBigInteger(string method, params object[] paramList)
-        {
-            var result = ExcuteCommandAsync<string>(method, paramList);
-            result.Wait();
-            return result.Result.HexToBigInteger(false);
-        }        
+        //public BigInteger ExcuteCommandParseBigInteger(string method, params object[] paramList)
+        //{
+        //    var result = ExcuteCommandAsync<string>(method, paramList);
+        //    result.Wait();
+        //    return result.Result.HexToBigInteger(false);
+        //}        
         public Task<T> ExcuteCommandAsync<T>(string method, params object[] paramList)
         {
             return client.SendRequestAsync<T>(method, null, paramList);
@@ -504,5 +510,6 @@ namespace PlatONet
             result.Wait();
             return result.Result;
         }
+        #endregion
     }
 }
