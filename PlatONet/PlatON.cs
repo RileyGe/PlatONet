@@ -208,6 +208,22 @@ namespace PlatONet
                     trans.ToDict(), param.BlockNumber
                 });
         }
+        public ulong ChainId()
+        {
+            return Convert.ToUInt64(ExcuteCommand<string>(ApiMplatonods.platon_chainId.ToString()), 16);
+        }
+        public Task<string> ChainIdAsync()
+        {
+            return ExcuteCommandAsync<string>(ApiMplatonods.platon_chainId.ToString());
+        }
+        public string GetAddressHrp()
+        {
+            return ExcuteCommand<string>(ApiMplatonods.platon_getAddressHrp.ToString());
+        }
+        public Task<string> GetAddressHrpAsync()
+        {
+            return ExcuteCommandAsync<string>(ApiMplatonods.platon_getAddressHrp.ToString());
+        }
         public BigInteger EstimateGas(Transaction trans)
         {
             var dict = trans.ToDict();
@@ -366,6 +382,111 @@ namespace PlatONet
                 {
                     hash
                 });
+        }
+        public ulong NewFilter(BlockParameter fromBlock, BlockParameter toBlock, string address, object[] topics)
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>
+            {
+                { "fromBlock", fromBlock.BlockNumber },
+                { "toBlock", toBlock.BlockNumber },
+                { "address", address },
+                { "topics", topics }
+            };
+            //if (Client == null) throw new NullReferenceException("RpcRequestHandler Client is null");
+            var id = ExcuteCommand<string>(ApiMplatonods.platon_newFilter.ToString(), dict);
+            return Convert.ToUInt64(id, 16);
+        }
+        public Task<string> NewFilterAsync(BlockParameter fromBlock, BlockParameter toBlock, string address, object[] topics)
+        {
+            Dictionary<string, object> dict = new Dictionary<string, object>
+            {
+                { "fromBlock", fromBlock.BlockNumber },
+                { "toBlock", toBlock.BlockNumber },
+                { "address", address },
+                { "topics", topics }
+            };
+            //if (Client == null) throw new NullReferenceException("RpcRequestHandler Client is null");
+            return ExcuteCommandAsync<string>(ApiMplatonods.platon_newFilter.ToString(), dict);
+        }
+        public ulong NewBlockFilter()
+        {
+            return Convert.ToUInt64(ExcuteCommand<string>(ApiMplatonods.platon_newBlockFilter.ToString()), 16);
+        }
+        public Task<string> NewBlockFilterAsync()
+        {
+            return ExcuteCommandAsync<string>(ApiMplatonods.platon_newBlockFilter.ToString());
+        }
+        public ulong NewPendingTransactionFilter()
+        {
+            return Convert.ToUInt64(ExcuteCommand<string>(ApiMplatonods.platon_newPendingTransactionFilter.ToString()), 16);
+        }
+        public Task<string> NewPendingTransactionFilterAsync()
+        {
+            return ExcuteCommandAsync<string>(ApiMplatonods.platon_newPendingTransactionFilter.ToString());
+        }
+        public bool UninstallFilter(ulong filterId)
+        {
+            return ExcuteCommand<bool>(ApiMplatonods.platon_newPendingTransactionFilter.ToString(),
+                string.Format("0x{0:X}", filterId));
+        }
+        public Task<bool> UninstallFilterAsync(ulong filterId)
+        {
+            return ExcuteCommandAsync<bool>(ApiMplatonods.platon_newPendingTransactionFilter.ToString(),
+                string.Format("0x{0:X}", filterId));
+        }
+        public FilterLog[] GetFilterChanges(ulong filterId)
+        {
+            return ExcuteCommand<FilterLog[]>(ApiMplatonods.platon_getFilterChanges.ToString(),
+                string.Format("0x{0:X}", filterId));
+        }
+        public Task<FilterLog[]> GetFilterChangesAsync(ulong filterId)
+        {
+            return ExcuteCommandAsync<FilterLog[]>(ApiMplatonods.platon_getFilterChanges.ToString(),
+                string.Format("0x{0:X}", filterId));
+        }
+        public string[] GetFilterLogs(ulong filterId)
+        {
+            return ExcuteCommand<string[]>(ApiMplatonods.platon_getFilterLogs.ToString(),
+                string.Format("0x{0:X}", filterId));
+        }
+        public Task<string[]> GetFilterLogsAsync(ulong filterId)
+        {
+            return ExcuteCommandAsync<string[]>(ApiMplatonods.platon_getFilterLogs.ToString(),
+                string.Format("0x{0:X}", filterId));
+        }
+        public FilterLog[] GetLogs(BlockParameter fromBlock, BlockParameter toBlock, string address, object[] topics)
+        {
+
+            Dictionary<string, object> dict = new Dictionary<string, object>
+            {
+                { "fromBlock", fromBlock.BlockNumber },
+                { "toBlock", toBlock.BlockNumber },
+                { "address", address },
+                { "topics", topics }
+            };
+            //if (Client == null) throw new NullReferenceException("RpcRequestHandler Client is null");
+            return ExcuteCommand<FilterLog[]>(ApiMplatonods.platon_getFilterLogs.ToString(), dict);
+        }
+        public Task<FilterLog[]> GetLogsAsync(BlockParameter fromBlock, BlockParameter toBlock, string address, object[] topics)
+        {
+
+            Dictionary<string, object> dict = new Dictionary<string, object>
+            {
+                { "fromBlock", fromBlock.BlockNumber },
+                { "toBlock", toBlock.BlockNumber },
+                { "address", address },
+                { "topics", topics }
+            };
+            //if (Client == null) throw new NullReferenceException("RpcRequestHandler Client is null");
+            return ExcuteCommandAsync<FilterLog[]>(ApiMplatonods.platon_getFilterLogs.ToString(), dict);
+        }
+        public Nethereum.RPC.Eth.DTOs.Transaction[] PendingTransactions()
+        {
+            return ExcuteCommand<Nethereum.RPC.Eth.DTOs.Transaction[]>(ApiMplatonods.platon_pendingTransactions.ToString());
+        }
+        public Task<Nethereum.RPC.Eth.DTOs.Transaction[]> PendingTransactionsAsync()
+        {
+            return ExcuteCommandAsync<Nethereum.RPC.Eth.DTOs.Transaction[]>(ApiMplatonods.platon_pendingTransactions.ToString());
         }
         public BigInteger ExcuteCommandParseBigInteger(string method, params object[] paramList)
         {

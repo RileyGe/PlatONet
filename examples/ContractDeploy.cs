@@ -21,7 +21,7 @@ namespace examples
             var tx = new Transaction("", 0, nonceNum, gasPrice, gasLimit, bytecode);
             //var txJson = JsonSerializer.Serialize(tx);
             //var txJson = tx.ToJsonString();
-            tx.GasLimit = platonWeb3.PlatonEstimateGas(tx);           
+            tx.GasLimit = platonWeb3.PlatON.EstimateGas(tx);           
             
             //tx.Value = new byte[0];
             // private key for account lat1d4vw2qxjg5ldyaqceel3s6ykpljav6hcn0jfmh
