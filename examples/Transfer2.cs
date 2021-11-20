@@ -3,6 +3,7 @@ using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Signer;
 using System;
 using Nethereum.RLP;
+using Nethereum.Hex.HexTypes;
 
 namespace examples
 {
@@ -19,7 +20,7 @@ namespace examples
             ulong gasPrice = 1000000000;
             ulong gasLimit = 21000;
 
-            var tx = new Transaction(address, amount, nonceNum, gasPrice, gasLimit);
+            var tx = new Transaction(address, amount, nonceNum.ToUlong(), gasPrice, gasLimit);
             // private key for account lat1d4vw2qxjg5ldyaqceel3s6ykpljav6hcn0jfmh
             var privateKey = "d08baac64f52ae1b9c2ea559036650229f07f5d61d869dbb55562a9827fbaeb8";
             var platonKey = new EthECKey(privateKey.HexToByteArray(), true);

@@ -122,16 +122,18 @@ namespace PlatONet
                 });
         }
 
-        public ulong GetTransactionCount(string account, BlockParameter param = null)
-        {
-            var result = GetTransactionCountAsync(account, param);
-            result.Wait();
-            return Convert.ToUInt64(result.Result, 16);
-        }
-        public Task<string> GetTransactionCountAsync(string account, BlockParameter param = null)
+        public HexBigInteger GetTransactionCount(string account, BlockParameter param = null)
         {
             param = param ?? BlockParameter.DEFAULT;
-            return ExcuteCommandAsync<string>(ApiMplatonods.platon_getTransactionCount.ToString(), 
+            return ExcuteCommand<HexBigInteger>(ApiMplatonods.platon_getTransactionCount.ToString(),
+                paramList: new object[] {
+                    account, param.BlockNumber
+                });
+        }
+        public Task<HexBigInteger> GetTransactionCountAsync(string account, BlockParameter param = null)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommandAsync<HexBigInteger>(ApiMplatonods.platon_getTransactionCount.ToString(), 
                 paramList: new object[] {
                     account, param.BlockNumber
                 });

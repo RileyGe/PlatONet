@@ -1,4 +1,5 @@
 ﻿using Nethereum.Hex.HexConvertors.Extensions;
+using Nethereum.Hex.HexTypes;
 using Nethereum.Signer;
 using PlatONet;
 using System;
@@ -75,7 +76,7 @@ namespace examples
             var data = input.Data;
             var nonceNum = platonWeb3.PlatON.GetTransactionCount(sender.ToString());
             ulong gasPrice = 1000000000;
-            Transaction tx = new Transaction(contractAddress.ToString(), 0, nonceNum, gasPrice);
+            Transaction tx = new Transaction(contractAddress.ToString(), 0, nonceNum.ToUlong(), gasPrice);
             tx.GasLimit = gas.Result;
             tx.Data = data;
 

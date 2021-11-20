@@ -15,7 +15,7 @@ namespace examples
             var fromAddress = new Address("lat1d4vw2qxjg5ldyaqceel3s6ykpljav6hcn0jfmh");
             var amount = ((long)1e18).ToBytesForRLPEncoding();
             var nonceNum = platonWeb3.PlatON.GetTransactionCount(fromAddress.ToString());
-            var nonce = ((int)nonceNum).ToBytesForRLPEncoding();
+            var nonce = nonceNum.ToHexByteArray();
             var gasPrice = 1000000000.ToBytesForRLPEncoding();
             var gasLimit = 21000.ToBytesForRLPEncoding();
             var data = new byte[0];

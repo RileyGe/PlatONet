@@ -1,9 +1,5 @@
-﻿using Nethereum.Hex.HexConvertors.Extensions;
-using Nethereum.Signer;
-using PlatONet;
+﻿using PlatONet;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace examples
 {

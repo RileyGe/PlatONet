@@ -2,10 +2,6 @@
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Hex.HexTypes;
 using Nethereum.JsonRpc.Client;
-using Nethereum.RPC.Eth.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PlatONet
@@ -65,21 +61,28 @@ namespace PlatONet
         }
         public Task<string> SendTransactionAsync(params object[] functionInput)
         {
-            var from = _contract?.PlatON?.Account?.ToAddress();
-            var gas = EstimateGasAsync(functionInput);
-            var gasPrice = _contract.PlatON.GasPriceAsync();
-            var value = 0.ToHexBigInteger();
-            var nonce = _contract.PlatON.GetTransactionCountAsync(from.ToString());
-            gas.Wait();
-            gasPrice.Wait();
-            nonce.Wait();
-            return SendTransactionAsync(from.ToString(), gas.Result, gasPrice.Result, value, new HexBigInteger(nonce.Result), functionInput: functionInput);
+            return SendTransactionAsync(null, null, null, null, null, functionInput: functionInput);
         }
         public Task<string> SendTransactionAsync(string from, HexBigInteger gas, HexBigInteger gasPrice,
             HexBigInteger value, HexBigInteger nonce, params object[] functionInput)
-        {
-            var sender = new Address(from);
-            var input = _function.CreateTransactionInput(sender.ToEthereumAddress(), 
+        {            
+            var sender = from == null || from.Length < 1 ?
+                _contract?.PlatON?.Account?.ToAddress()
+                : new Address(from);
+            if (value == null) value = 0.ToHexBigInteger();
+            Task<HexBigInteger> gasResult = null, gasPriceResult = null, nonceResult = null;
+
+            if (gas == null || gas.Value == 0) gasResult = EstimateGasAsync(functionInput);
+            if (gasPrice == null || gasPrice.Value == 0) gasPriceResult = _contract.PlatON.GasPriceAsync();
+            if (nonce == null) nonceResult = _contract.PlatON.GetTransactionCountAsync(sender.ToString());
+            gasResult?.Wait();
+            gasPriceResult?.Wait();
+            nonceResult?.Wait();
+            gas = gasResult == null ? gas : gasResult.Result;
+            gasPrice = gasPriceResult == null ? gasPrice : gasPriceResult.Result;
+            nonce = nonceResult == null ? nonce : nonceResult.Result;
+
+            var input = _function.CreateTransactionInput(sender?.ToEthereumAddress(), 
                 gas, gasPrice, value, functionInput: functionInput);
             var data = input.Data;
             //var nonceNum = _contract.PlatON.GetTransactionCount(sender.ToString());
