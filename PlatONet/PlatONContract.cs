@@ -43,9 +43,22 @@ namespace PlatONet
             _contract = contract;
             _function = new Function(contract.EthContract, functionBuilder);
         }
+        public HexBigInteger EstimateGas(params object[] functionInput)
+        {
+            var result = EstimateGasAsync(functionInput: functionInput);
+            result.Wait();
+            return result.Result;
+        }
         public Task<HexBigInteger> EstimateGasAsync(params object[] functionInput)
         {
             return _function.EstimateGasAsync(functionInput);
+        }
+        public HexBigInteger EstimateGas(string from, HexBigInteger gas,
+            HexBigInteger value, params object[] functionInput)
+        {
+            var result = EstimateGasAsync(from, gas, value, functionInput: functionInput);
+            result.Wait();
+            return result.Result;
         }
         public Task<HexBigInteger> EstimateGasAsync(string from, HexBigInteger gas,
             HexBigInteger value, params object[] functionInput)
@@ -58,6 +71,19 @@ namespace PlatONet
             else 
                 etherAddress = (new Address(from)).ToEthereumAddress();
             return _function.EstimateGasAsync(etherAddress, gas, value, functionInput);
+        }
+        public string SendTransaction(params object[] functionInput)
+        {
+            var result = SendTransactionAsync(functionInput: functionInput);
+            result.Wait();
+            return result.Result;
+        }
+        public string SendTransaction(string from, HexBigInteger gas, HexBigInteger gasPrice,
+            HexBigInteger value, HexBigInteger nonce, params object[] functionInput)
+        {
+            var result = SendTransactionAsync(from, gas, gasPrice, value, nonce, functionInput: functionInput);
+            result.Wait();
+            return result.Result;
         }
         public Task<string> SendTransactionAsync(params object[] functionInput)
         {
@@ -91,6 +117,32 @@ namespace PlatONet
                 gasPrice, gas, data, _contract.PlatON.ChainId);
             tx.Sign(_contract?.PlatON?.Account);
             return _contract.PlatON.SendRawTransactionAsync(tx.SignedTransaction.ToHex());
+        }
+        public TReturn Call<TReturn>(params object[] functionInput)
+        {
+            var result = CallAsync<TReturn>(functionInput: functionInput);
+            result.Wait();
+            return result.Result;
+        }
+        public TReturn Call<TReturn>(string from, HexBigInteger gas,
+            HexBigInteger value, params object[] functionInput)
+        {
+            var result = CallAsync<TReturn>(from, gas, value, functionInput: functionInput);
+            result.Wait();
+            return result.Result;
+        }
+        public TReturn Call<TReturn>(string from, HexBigInteger gas,
+            HexBigInteger value, BlockParameter block, params object[] functionInput)
+        {
+            var result = CallAsync<TReturn>(from, gas, value, block, functionInput: functionInput);
+            result.Wait();
+            return result.Result;
+        }
+        public TReturn Call<TReturn>(BlockParameter block, params object[] functionInput)
+        {
+            var result = CallAsync<TReturn>(block, functionInput: functionInput);
+            result.Wait();
+            return result.Result;
         }
         public Task<TReturn> CallAsync<TReturn>(params object[] functionInput)
         {
