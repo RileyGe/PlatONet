@@ -3,6 +3,15 @@ using Newtonsoft.Json;
 
 namespace PlatONet
 {
+    public class TransactionResponse : BaseResponse
+    {
+        public TransactionReceipt TransactionReceipt { get; set; }
+        public override string ToString()
+        {
+            return "TransactionResponse [transactionReceipt=" + TransactionReceipt + ", getCode()=" + Code
+                    + ", getErrMsg()=" + ErrMsg + "]";
+        }
+    }
     public class CallResponse<T> : BaseResponse
     {
         [JsonProperty("Ret")]

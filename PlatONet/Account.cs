@@ -8,6 +8,7 @@ namespace PlatONet
     public class Account
     {
         internal EthECKey _key;
+        //private string 
         public Account(string privateKeyHex)
         {
             _key = new EthECKey(privateKeyHex.HexToByteArray(), true);            
@@ -19,7 +20,7 @@ namespace PlatONet
                 return _key.GetPubKeyNoPrefix();
             }
         }
-        public Address ToAddress(string hrp = "lat") {
+        public Address GetAddress(string hrp = "lat") {
             //byte[] pkBytes = PublicKey;
             var result = CryptoUtils.Keccak(PublicKey);
             //var hashAlgorithm = new KeccakDigest(256);

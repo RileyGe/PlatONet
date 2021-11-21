@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Hex.HexTypes;
 using Nethereum.RLP;
@@ -16,13 +17,19 @@ namespace PlatONet
                 return _to;
             }
             set {
-                if (value == null) {
-                    if (_to == null) return;
-                    else if (!value.Equals(_to))
+                if (_to == null)
+                {
+                    if (value == null) return;
+                    else
                     {
                         paramsChanged = true;
                         _to = value;
                     }
+                }
+                else if (!value.Equals(_to))
+                {
+                    paramsChanged = true;
+                    _to = value;
                 }
             } 
         }
@@ -32,14 +39,19 @@ namespace PlatONet
                 return _amount;
             }
             set {
-                if (value == null)
+                if (_amount == null)
                 {
-                    if (_amount == null) return;
-                    else if (!value.Equals(_amount))
+                    if (value == null) return;
+                    else
                     {
                         paramsChanged = true;
                         _amount = value;
                     }
+                }
+                else if (!value.Equals(_amount))
+                {
+                    paramsChanged = true;
+                    _amount = value;
                 }
             } 
         }
@@ -49,7 +61,15 @@ namespace PlatONet
                 return _nonce;
             } 
             set {
-                if (_nonce == null) return;
+                if (_nonce == null)
+                {
+                    if (value == null) return;
+                    else
+                    {
+                        paramsChanged = true;
+                        _nonce = value;
+                    }
+                }
                 else if (!value.Equals(_nonce))
                 {
                     paramsChanged = true;
@@ -65,7 +85,15 @@ namespace PlatONet
             }
             set
             {
-                if (_gasPrice == null) return;
+                if (_gasPrice == null)
+                {
+                    if (value == null) return;
+                    else
+                    {
+                        paramsChanged = true;
+                        _gasPrice = value;
+                    }
+                }
                 else if (!value.Equals(_gasPrice))
                 {
                     paramsChanged = true;
@@ -81,7 +109,15 @@ namespace PlatONet
             }
             set
             {
-                if (_gasLimit == null) return;
+                if (_gasLimit == null)
+                {
+                    if (value == null) return;
+                    else
+                    {
+                        paramsChanged = true;
+                        _gasLimit = value;
+                    }
+                }
                 else if (!value.Equals(_gasLimit))
                 {
                     paramsChanged = true;
@@ -97,7 +133,14 @@ namespace PlatONet
             }
             set
             {
-                if (_data == null) return;
+                if (_data == null) {
+                    if (value == null) return;
+                    else
+                    {
+                        paramsChanged = true;
+                        _data = value;
+                    }
+                }
                 else if (!value.Equals(_data))
                 {
                     paramsChanged = true;
@@ -113,7 +156,15 @@ namespace PlatONet
             }
             set
             {
-                if (_chainId == null) return;
+                if (_chainId == null)
+                {
+                    if (value == null) return;
+                    else
+                    {
+                        paramsChanged = true;
+                        _chainId = value;
+                    }
+                }
                 else if (!value.Equals(_chainId))
                 {
                     paramsChanged = true;
@@ -145,9 +196,9 @@ namespace PlatONet
         //{ }
         public Transaction(string to = null, HexBigInteger amount = null, HexBigInteger nonce = null, HexBigInteger gasPrice = null, 
             HexBigInteger gasLimit = null, string data = null, HexBigInteger chainId = null)
-        {  
+        {
             // check address format
-            _to = new Address(to);
+            if (to != null && to.Length > 0) _to = new Address(to);
             _amount = amount;
             _nonce = nonce;
             _gasPrice = gasPrice;
@@ -159,7 +210,9 @@ namespace PlatONet
         public EthECDSASignature Sign(EthECKey key)
         {
             if (paramsChanged)
-               rawTranction = new LegacyTransactionChainId(_to.Bytes?.ToHex(), _amount, _nonce, _gasPrice, _gasLimit, _data, _chainId);
+               rawTranction = new LegacyTransactionChainId(_to?.Bytes?.ToHex(), _amount ?? new BigInteger(0), 
+                   _nonce ?? new BigInteger(0), _gasPrice ?? new BigInteger(0), _gasLimit ?? new BigInteger(0),
+                   _data, _chainId ?? new BigInteger(0));
             rawTranction.Sign(key);
             _signedTransaction = rawTranction.GetRLPEncoded();            
             return rawTranction.Signature;

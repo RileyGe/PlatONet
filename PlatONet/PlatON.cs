@@ -41,6 +41,15 @@ namespace PlatONet
             return new PlatONContract(client, abi, address, this);
         }
         public PPOS PPOS { get; private set; }
+        public Transaction FillTransactionWithDefaultValue(Transaction trans = null)
+        {
+            trans = trans ?? new Transaction();
+            trans.Nonce = trans.Nonce ?? GetTransactionCount(Account.GetAddress().ToString());
+            trans.GasPrice = trans.GasPrice ?? GasPrice();
+            trans.GasLimit = trans.GasLimit ?? EstimateGas(trans);
+            if (Account != null) trans.Nonce = trans.Nonce ?? GetTransactionCount(Account.ToString());
+            return trans;
+        }
         #region rpc requests        
         public string ProtocolVersion()
         {      
@@ -247,6 +256,8 @@ namespace PlatONet
         {
             var dict = trans.ToDict();
             if (dict.ContainsKey("gas")) dict.Remove("gas");
+            if (dict.ContainsKey("nonce")) dict.Remove("nonce");
+            if (dict.ContainsKey("gasPrice")) dict.Remove("gasPrice");
             return ExcuteCommand<HexBigInteger>(ApiMplatonods.platon_estimateGas.ToString(),
                 paramList: new object[]{
                     dict

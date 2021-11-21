@@ -66,7 +66,7 @@ namespace PlatONet
             string etherAddress;
             if (from == null || from.Length < 1)
             {
-                etherAddress = _contract?.PlatON?.Account?.ToAddress()?.ToEthereumAddress();
+                etherAddress = _contract?.PlatON?.Account?.GetAddress()?.ToEthereumAddress();
             }                
             else 
                 etherAddress = (new Address(from)).ToEthereumAddress();
@@ -93,7 +93,7 @@ namespace PlatONet
             HexBigInteger value, HexBigInteger nonce, params object[] functionInput)
         {            
             var sender = from == null || from.Length < 1 ?
-                _contract?.PlatON?.Account?.ToAddress()
+                _contract?.PlatON?.Account?.GetAddress()
                 : new Address(from);
             if (value == null) value = 0.ToHexBigInteger();
             Task<HexBigInteger> gasResult = null, gasPriceResult = null, nonceResult = null;
