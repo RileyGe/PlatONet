@@ -139,12 +139,12 @@ namespace PlatONet
         //{
             
         //}
-        public Transaction(string to, ulong amount = 0, ulong nonce = 0, ulong gasPrice = 0, ulong gasLimit = 0,
-            string data = "", ulong chainId = 210309) : this(to, amount.ToHexBigInteger(), nonce.ToHexBigInteger(),
-                gasPrice.ToHexBigInteger(), gasPrice.ToHexBigInteger(), data, chainId.ToHexBigInteger())
-        { }
-        public Transaction(string to, HexBigInteger amount, HexBigInteger nonce, HexBigInteger gasPrice, HexBigInteger gasLimit, 
-            string data, HexBigInteger chainId)
+        //public Transaction(string to, ulong amount = 0, ulong nonce = 0, ulong gasPrice = 0, ulong gasLimit = 0,
+        //    string data = "", ulong chainId = 210309) : this(to, amount.ToHexBigInteger(), nonce.ToHexBigInteger(),
+        //        gasPrice.ToHexBigInteger(), gasLimit.ToHexBigInteger(), data, chainId.ToHexBigInteger())
+        //{ }
+        public Transaction(string to = null, HexBigInteger amount = null, HexBigInteger nonce = null, HexBigInteger gasPrice = null, 
+            HexBigInteger gasLimit = null, string data = null, HexBigInteger chainId = null)
         {  
             // check address format
             _to = new Address(to);
@@ -188,15 +188,15 @@ namespace PlatONet
             Dictionary<string, string> data = new Dictionary<string, string>();
 
             if (To != null && To.Bytes != null && To.Bytes.Length > 0) data.Add("to", To.ToString());
-            if (Nonce != null && Nonce.Value >= 0) data.Add("nonce", "0x" + Nonce.HexValue);
-            if (GasPrice != null && GasPrice.Value > 0) data.Add("gasPrice", "0x" + GasPrice.HexValue);
-            if (GasLimit != null && GasLimit.Value > 0) data.Add("gas", "0x" + GasLimit.HexValue);
-            if (Amount != null && Amount.Value > 0) data.Add("value", "0x" + Amount.HexValue);
+            if (Nonce != null && Nonce.Value >= 0) data.Add("nonce", Nonce.HexValue);
+            if (GasPrice != null && GasPrice.Value > 0) data.Add("gasPrice", GasPrice.HexValue);
+            if (GasLimit != null && GasLimit.Value > 0) data.Add("gas", GasLimit.HexValue);
+            if (Amount != null && Amount.Value > 0) data.Add("value", Amount.HexValue);
             if (Data != null && Data.Length > 0) {
                 if (Data.StartsWith("0x")) data.Add("data", Data);
                 else data.Add("data", "0x" + Data);
             }
-            if (ChainId != null && ChainId.Value > 0) data.Add("chainId", "0x" + ChainId.HexValue);
+            if (ChainId != null && ChainId.Value > 0) data.Add("chainId", ChainId.HexValue);
             return data;
         }
         //public static Transaction GetPaymentTransaction(string to, long amount, long gasPrice = 0, long gasLimit = 0, string msg = "", long nonce = -1, long chainId = 210309)

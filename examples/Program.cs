@@ -13,7 +13,8 @@ namespace examples
             //ContractInteractive.Main(args); return;
             //AccountTest.Main(args); return;
             //Contract3.Main(args); return;
-            Contract4.Main(args); return;
+            //Contract4.Main(args); return;
+            PPOS.Main(args); return;
         }
     }
 }

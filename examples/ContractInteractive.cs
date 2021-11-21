@@ -76,7 +76,7 @@ namespace examples
             var data = input.Data;
             var nonceNum = platonWeb3.PlatON.GetTransactionCount(sender.ToString());
             ulong gasPrice = 1000000000;
-            Transaction tx = new Transaction(contractAddress.ToString(), 0, nonceNum.ToUlong(), gasPrice);
+            Transaction tx = new Transaction(contractAddress.ToString(), null, nonceNum, gasPrice.ToHexBigInteger());
             tx.GasLimit = gas.Result;
             tx.Data = data;
 

@@ -12,6 +12,15 @@ namespace PlatONet
 {
     public class PlatON
     {
+        public PlatON(IClient client)
+        {
+            this.client = client;
+            InitPPOS();
+        }
+        private void InitPPOS()
+        {
+            PPOS = new PPOS(this);
+        }
         private IClient client;
         public IClient Client
         {
@@ -19,7 +28,7 @@ namespace PlatONet
             {
                 return client;
             }
-            set
+            private set
             {
                 client = value;
             }
@@ -31,6 +40,7 @@ namespace PlatONet
         {
             return new PlatONContract(client, abi, address, this);
         }
+        public PPOS PPOS { get; private set; }
         #region rpc requests        
         public string ProtocolVersion()
         {      
@@ -505,7 +515,7 @@ namespace PlatONet
         //}        
         public Task<T> ExcuteCommandAsync<T>(string method, params object[] paramList)
         {
-            return client.SendRequestAsync<T>(method, null, paramList);
+            return client.SendRequestAsync<T>(method, null, paramList: paramList);
         }
         public T ExcuteCommand<T>(string method, params object[] paramList)
         {

@@ -54,10 +54,7 @@ namespace PlatONet
         }
         private void InitPlatON(IClient client)
         {
-            PlatON = new PlatON()
-            {
-                Client = client
-            };
+            PlatON = new PlatON(client);
         }
         public string ClientVersion()
         {

@@ -19,7 +19,8 @@ namespace examples
             ulong gasPrice = 1000000000;
             ulong gasLimit = 300000;
 
-            var tx = new Transaction("", 0, nonceNum.ToUlong(), gasPrice, gasLimit, bytecode);
+            var tx = new Transaction(null, null, nonceNum, gasPrice.ToHexBigInteger(), 
+                gasLimit.ToHexBigInteger(), bytecode);
             //var txJson = JsonSerializer.Serialize(tx);
             //var txJson = tx.ToJsonString();
             tx.GasLimit = platonWeb3.PlatON.EstimateGas(tx);           
