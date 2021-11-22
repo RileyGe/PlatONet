@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Nethereum.Contracts;
 using Nethereum.RPC;
 using Nethereum.Hex.HexTypes;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace PlatONet
 {
@@ -113,13 +115,50 @@ namespace PlatONet
         }
         public Contract PlatonGetContract(string abi, string contractAddress)
         {
-            //client.
-            //var ethService = new EthApiService(client, transactionManager);
-            //var id = ethService.ChainId;
-            //var result = id.SendRequestAsync();
-
             var contract = new Contract(new EthApiService(client/*, transactionManager*/), abi, contractAddress);
             return contract;
+        }
+        public Task<ProgramVersion> GetProgramVersionAsync()
+        {
+            return PlatON.ExcuteCommandAsync<ProgramVersion>("admin_getProgramVersion");
+        }
+        public ProgramVersion GetProgramVersion()
+        {
+            return PlatON.ExcuteCommand<ProgramVersion>("admin_getProgramVersion");
+        }
+        public string GetSchnorrNIZKProve()
+        {
+            return PlatON.ExcuteCommand<string>("admin_getSchnorrNIZKProve");
+        }
+        public Task<string> GetSchnorrNIZKProveAsync()
+        {
+            return PlatON.ExcuteCommandAsync<string>("admin_getSchnorrNIZKProve");
+        }
+        public EconomicConfig GetEconomicConfig()
+        {
+            var result = PlatON.ExcuteCommand<string>("debug_economicConfig");
+            return JsonConvert.DeserializeObject<EconomicConfig>(result);
+        }
+        public Task<string> GetEconomicConfigAsync()
+        {
+            return PlatON.ExcuteCommandAsync<string>("debug_economicConfig");
+        }
+        public ulong GetChainId()
+        {
+            return Convert.ToUInt64(PlatON.ExcuteCommand<string>(ApiMplatonods.platon_chainId.ToString()), 16);
+        }
+        public Task<string> GetChainIdAsync()
+        {
+            return PlatON.ExcuteCommandAsync<string>(ApiMplatonods.platon_chainId.ToString());
+        }
+        public List<WaitSlashingNode> GetWaitSlashingNodeList()
+        {
+            var result = PlatON.ExcuteCommand<string>("debug_getWaitSlashingNodeList");
+            return JsonConvert.DeserializeObject<List<WaitSlashingNode>>(result);
+        }
+        public Task<string> GetWaitSlashingNodeListAsync()
+        {
+            return PlatON.ExcuteCommandAsync<string>("debug_getWaitSlashingNodeList");
         }
     }
     /// <summary>

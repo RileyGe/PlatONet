@@ -273,6 +273,46 @@ namespace PlatONet
         }
         #endregion
         #region DAO
+        public void SubmitProposal()
+        {
+
+        }
+        public CallResponse<Proposal> GetProposal(string proposalId,BlockParameter block = null)
+        {
+            var funcType = PPOSFunctionType.GET_PROPOSAL_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]> {
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement(proposalId.HexToByteArray())
+            };
+            var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
+            var hexStr = _platon.Call<string>(tx, block);
+            return DecodeResponse<CallResponse<Proposal>>(hexStr);
+        }
+        public CallResponse<TallyResult> GetTallyResult(string proposalId, BlockParameter block = null)
+        {
+            var funcType = PPOSFunctionType.GET_TALLY_RESULT_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]> {
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement(proposalId.HexToByteArray())
+            };
+            var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
+            var hexStr = _platon.Call<string>(tx, block);
+            return DecodeResponse<CallResponse<TallyResult>>(hexStr);
+        }
+        public CallResponse<List<Proposal>> GetProposalList(BlockParameter block = null)
+        {
+            var funcType = PPOSFunctionType.GET_PROPOSAL_LIST_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]> {
+                EncodeElement(funcType.ToBytesForRLPEncoding())
+            };
+            var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
+            var hexStr = _platon.Call<string>(tx, block);
+            return DecodeResponse<CallResponse<List<Proposal>>>(hexStr);
+        }
+        public void DeclareVersion()
+        {
+
+        }
         #endregion
         private Transaction BuildTransaction(IEnumerable<byte[]> bufArray,
             string address, Transaction netParams = null)
