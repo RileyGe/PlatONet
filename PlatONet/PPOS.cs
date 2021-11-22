@@ -75,7 +75,7 @@ namespace PlatONet
             var funcType = PPOSFunctionType.GET_ACTIVE_VERSION;
             List<byte[]> bufArray = new List<byte[]>
             {
-                funcType.ToBytesForRLPEncoding()
+                EncodeElement(funcType.ToBytesForRLPEncoding())
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
             var hexStr = _platon.Call<string>(tx, block);
@@ -87,8 +87,8 @@ namespace PlatONet
             var funcType = PPOSFunctionType.GET_STAKINGINFO_FUNC_TYPE;
             List<byte[]> bufArray = new List<byte[]>
             {
-                funcType.ToBytesForRLPEncoding(),
-                nodeId.HexToByteArray()
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement(nodeId.HexToByteArray())
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
             var hexStr = _platon.Call<string>(tx, block);
@@ -100,7 +100,7 @@ namespace PlatONet
             var funcType = PPOSFunctionType.GET_PACKAGEREWARD_FUNC_TYPE;
             List<byte[]> bufArray = new List<byte[]>
             {
-                funcType.ToBytesForRLPEncoding()
+                EncodeElement(funcType.ToBytesForRLPEncoding())
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
             var hexStr = _platon.Call<string>(tx, block);
@@ -112,7 +112,7 @@ namespace PlatONet
             var funcType = PPOSFunctionType.GET_STAKINGREWARD_FUNC_TYPE;
             List<byte[]> bufArray = new List<byte[]>
             {
-                funcType.ToBytesForRLPEncoding()
+                EncodeElement(funcType.ToBytesForRLPEncoding())
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
             var hexStr = _platon.Call<string>(tx, block);
@@ -123,7 +123,7 @@ namespace PlatONet
             var funcType = PPOSFunctionType.GET_AVGPACKTIME_FUNC_TYPE;
             List<byte[]> bufArray = new List<byte[]>
             {
-                funcType.ToBytesForRLPEncoding()
+                EncodeElement(funcType.ToBytesForRLPEncoding())
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
             var hexStr = _platon.Call<string>(tx, block);
@@ -144,10 +144,57 @@ namespace PlatONet
             var funcType = PPOSFunctionType.DELEGATE_FUNC_TYPE;
             List<byte[]> bufArray = new List<byte[]>
             {
-                funcType.ToBytesForRLPEncoding(),
-                ((int)stakingAmountType).ToBytesForRLPEncoding(),
-                nodeId.HexToByteArray(),                
-                amount.ToHexByteArray()
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement(((int)stakingAmountType).ToBytesForRLPEncoding()),
+                EncodeElement(nodeId.HexToByteArray()),                
+                EncodeElement(amount.ToHexByteArray())
+            };
+            //netParams = netParams ?? new Transaction();
+            netParams = BuildTransaction(bufArray, FunctionTypeToAddress(funcType), netParams);
+            netParams = _platon.FillTransactionWithDefaultValue(netParams);
+            netParams.ChainId = _platon.ChainId;
+            return _platon.SendTransaction(netParams);
+        }
+        public CallResponse<List<DelegationIdInfo>> GetDelegateListByAddr(string address, BlockParameter block = null)
+        {
+            var funcType = PPOSFunctionType.GET_DELEGATELIST_BYADDR_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]> { 
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement(new Address(address).Bytes)
+            };
+            var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
+            var hexStr = _platon.Call<string>(tx, block);
+            return DecodeResponse<CallResponse<List<DelegationIdInfo>>>(hexStr);
+        }
+        public CallResponse<Delegation> GetDelegateInfo(string address, string nodeId, HexBigInteger stakingBlockNum, BlockParameter block = null)
+        {
+            var funcType = PPOSFunctionType.GET_DELEGATEINFO_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]> {
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement(new Address(address).Bytes),
+                EncodeElement(nodeId.HexToByteArray()),
+                EncodeElement(stakingBlockNum.ToHexByteArray())
+            };
+            var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
+            var hexStr = _platon.Call<string>(tx, block);
+            return DecodeResponse<CallResponse<Delegation>>(hexStr);
+        }
+        /// <summary>
+        /// 减持/撤销委托(全部减持就是撤销)
+        /// </summary>
+        /// <param name="nodeId">节点id，16进制格式，0x开头</param>
+        /// <param name="stakingBlockNum">委托节点的质押块高，代表着某个node的某次质押的唯一标示</param>
+        /// <param name="stakingAmount">减持的委托金额(按照最小单位算，1LAT = 10 * *18 VON)</param>
+        /// <returns>交易的Hash</returns>
+        public string UnDelegate(string nodeId, HexBigInteger stakingBlockNum, HexBigInteger stakingAmount, Transaction netParams = null)
+        {
+            var funcType = PPOSFunctionType.WITHDREW_DELEGATE_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]>
+            {
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement(nodeId.HexToByteArray()),
+                EncodeElement(stakingBlockNum.ToHexByteArray()),
+                EncodeElement(stakingAmount.ToHexByteArray())
             };
             //netParams = netParams ?? new Transaction();
             netParams = BuildTransaction(bufArray, FunctionTypeToAddress(funcType), netParams);
@@ -156,14 +203,85 @@ namespace PlatONet
             return _platon.SendTransaction(netParams);
         }
         #endregion
+        #region reward
+        /// <summary>
+        /// 提取账户当前所有的可提取的委托奖励
+        /// </summary>
+        /// <returns>交易的Hash</returns>
+        public string WithdrawDelegateReward(Transaction netParams = null)
+        {
+            var funcType = PPOSFunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]>
+            {
+                EncodeElement(funcType.ToBytesForRLPEncoding())
+            };
+            //netParams = netParams ?? new Transaction();
+            netParams = BuildTransaction(bufArray, FunctionTypeToAddress(funcType), netParams);
+            netParams = _platon.FillTransactionWithDefaultValue(netParams);
+            netParams.ChainId = _platon.ChainId;
+            return _platon.SendTransaction(netParams);
+        }
+        public CallResponse<List<RewardInfo>> GetDelegateReward(string address, List<string> nodeList = null, BlockParameter block = null)
+        {
+            var funcType = PPOSFunctionType.GET_DELEGATE_REWARD_FUNC_TYPE;
+            nodeList = nodeList ?? new List<string>();
+            List<byte[]> nodeListBuf = new List<byte[]>();
+            foreach(var nodeId in nodeList)
+            {
+                nodeListBuf.Add(nodeId.HexToByteArray());
+            }
+            List<byte[]> bufArray = new List<byte[]> {
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement(new Address(address).Bytes),
+                EncodeArray(nodeListBuf)
+            };
+            var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
+            var hexStr = _platon.Call<string>(tx, block);
+            return DecodeResponse<CallResponse<List<RewardInfo>>>(hexStr);
+        }
+        #endregion
+        #region node
+        public CallResponse<List<Node>> GetVerifierList(BlockParameter block = null)
+        {
+            var funcType = PPOSFunctionType.GET_VERIFIERLIST_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]> {
+                EncodeElement(funcType.ToBytesForRLPEncoding())
+            };
+            var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
+            var hexStr = _platon.Call<string>(tx, block);
+            return DecodeResponse<CallResponse<List<Node>>>(hexStr);
+        }
+        public CallResponse<List<Node>> GetValidatorList(BlockParameter block = null)
+        {
+            var funcType = PPOSFunctionType.GET_VALIDATORLIST_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]> {
+                EncodeElement(funcType.ToBytesForRLPEncoding())
+            };
+            var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
+            var hexStr = _platon.Call<string>(tx, block);
+            return DecodeResponse<CallResponse<List<Node>>>(hexStr);
+        }
+        public CallResponse<List<Node>> GetCandidateList(BlockParameter block = null)
+        {
+            var funcType = PPOSFunctionType.GET_VALIDATORLIST_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]> {
+                EncodeElement(funcType.ToBytesForRLPEncoding())
+            };
+            var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
+            var hexStr = _platon.Call<string>(tx, block);
+            return DecodeResponse<CallResponse<List<Node>>>(hexStr);
+        }
+        #endregion
+        #region DAO
+        #endregion
         private Transaction BuildTransaction(IEnumerable<byte[]> bufArray,
             string address, Transaction netParams = null)
         {
             netParams = netParams ?? new Transaction();
             netParams.To = new Address(address);
-            var encodedBufArray = new List<byte[]>();
-            foreach (var item in bufArray) encodedBufArray.Add(EncodeElement(item));
-            netParams.Data = EncodeArray(encodedBufArray).ToHex();
+            //var encodedBufArray = new List<byte[]>();
+            //foreach (var item in bufArray) encodedBufArray.Add(EncodeElement(item));
+            netParams.Data = EncodeArray(bufArray).ToHex();
             return netParams;        
         }
         public static T DecodeResponse<T>(string hexStr)

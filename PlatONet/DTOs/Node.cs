@@ -9,64 +9,64 @@ namespace PlatONet
         public string NodeId { get; set; }
 
         [JsonProperty("StakingAddress")]
-        public string StakingAddress;
+        public string StakingAddress { get; set; }
 
         [JsonProperty("BenefitAddress")]
-        public string BenifitAddress;
+        public string BenifitAddress { get; set; }
 
         [JsonProperty("RewardPer")]
-        public HexBigInteger RewardPer;
+        public HexBigInteger RewardPer { get; set; }
 
         [JsonProperty("NextRewardPer")]
-        public HexBigInteger NextRewardPer;
+        public HexBigInteger NextRewardPer { get; set; }
 
         [JsonProperty("StakingTxIndex")]
-        public HexBigInteger StakingTxIndex;
+        public HexBigInteger StakingTxIndex { get; set; }
 
         [JsonProperty("ProgramVersion")]
-        public HexBigInteger ProgramVersion;
+        public HexBigInteger ProgramVersion { get; set; }
 
         [JsonProperty("Status")]
-        public HexBigInteger Status;
+        public HexBigInteger Status { get; set; }
 
         [JsonProperty("StakingEpoch")]
-        public HexBigInteger StakingEpoch;
+        public HexBigInteger StakingEpoch { get; set; }
 
         [JsonProperty("StakingBlockNum")]
-        public HexBigInteger StakingBlockNum;
+        public HexBigInteger StakingBlockNum { get; set; }
 
         [JsonProperty("Shares")]
-        public HexBigInteger Shares;
+        public HexBigInteger Shares { get; set; }
 
         [JsonProperty("Released")]
-        public HexBigInteger Released;
+        public HexBigInteger Released { get; set; }
 
         [JsonProperty("ReleasedHes")]
-        public HexBigInteger ReleasedHes;
+        public HexBigInteger ReleasedHes { get; set; }
 
         [JsonProperty("RestrictingPlan")]
-        public HexBigInteger RestrictingPlan;
+        public HexBigInteger RestrictingPlan { get; set; }
 
         [JsonProperty("RestrictingPlanHes")]
-        public HexBigInteger RestrictingPlanHes;
+        public HexBigInteger RestrictingPlanHes { get; set; }
 
         [JsonProperty("ExternalId")]
-        public string ExternalId;
+        public string ExternalId { get; set; }
 
         [JsonProperty("NodeName")]
-        public string NodeName;
+        public string NodeName { get; set; }
 
         [JsonProperty("Website")]
-        public string Website;
+        public string Website { get; set; }
 
         [JsonProperty("Details")]
-        public string Details;
+        public string Details { get; set; }
 
         [JsonProperty("ValidatorTerm")]
-        public HexBigInteger ValidatorTerm;
+        public HexBigInteger ValidatorTerm { get; set; }
 
         [JsonProperty("DelegateEpoch")]
-        public HexBigInteger DelegateEpoch;
+        public HexBigInteger DelegateEpoch { get; set; }
 
         [JsonProperty("DelegateTotal")]
         public HexBigInteger DelegateTotal { get; set; }
@@ -75,7 +75,7 @@ namespace PlatONet
         public HexBigInteger DelegateTotalHes { get; set; }
 
         [JsonProperty("DelegateRewardTotal")]
-        public HexBigInteger DelegateRewardTotal;
+        public HexBigInteger DelegateRewardTotal { get; set; }
         public Node()
         {
         }
