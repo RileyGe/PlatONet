@@ -113,7 +113,7 @@ namespace PlatONet
         {
             return client.SendRequestAsync<string>("net_peerCount");
         }
-        public Contract PlatonGetContract(string abi, string contractAddress)
+        public Contract GetContract(string abi, string contractAddress)
         {
             var contract = new Contract(new EthApiService(client/*, transactionManager*/), abi, contractAddress);
             return contract;
@@ -160,6 +160,20 @@ namespace PlatONet
         {
             return PlatON.ExcuteCommandAsync<string>("debug_getWaitSlashingNodeList");
         }
+        ///// <summary>
+        ///// String :  : 数据库名称
+        ///// String :  : 键名
+        ///// String :  : 要存入的字符串
+        ///// </summary>
+        //public string DbPutString(string databaseName, string keyName, string stringToStore)
+        //{
+        //    return PlatON.ExcuteCommand<string>("db_putString", 
+        //        paramList: new object[] { 
+        //            databaseName,
+        //            keyName,
+        //            stringToStore
+        //        });
+        //}
     }
     /// <summary>
     /// https://eth.wiki/json-rpc/API#the-default-block-parameter

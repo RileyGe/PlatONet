@@ -54,7 +54,7 @@ namespace examples
         }
       ]";
             var contractAddress = new Address("lat1ts7u6ekl9zfmqw399wvnfh2gxc5gkjv34ymkvt");
-            var contract = platonWeb3.PlatonGetContract(abi, contractAddress.ToEthereumAddress());
+            var contract = platonWeb3.GetContract(abi, contractAddress.ToEthereumAddress());
             
             var result = contract.GetFunction("getName").CallAsync<string>();
             result.Wait();

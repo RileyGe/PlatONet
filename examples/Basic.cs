@@ -17,8 +17,10 @@ namespace examples
             //Console.WriteLine(prove);
             //var config = platonWeb3.GetEconomicConfig();
             //Console.WriteLine(config);
-            var ls = platonWeb3.GetWaitSlashingNodeList();
-            Console.WriteLine(ls);
+            //var ls = platonWeb3.GetWaitSlashingNodeList();
+            //Console.WriteLine(ls);
+            //var result = platonWeb3.DbPutString("dbname", "key", "value");
+            //Console.WriteLine(result);
             //var version = platonWeb3.ClientVersion();
             //Console.WriteLine(version);
             //var netVersion = platonWeb3.NetVersion();
