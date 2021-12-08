@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Nethereum.JsonRpc.Client;
 using System.Threading.Tasks;
 using Nethereum.Contracts;
@@ -24,22 +24,40 @@ namespace PlatONet
             }
         }
         public PlatON PlatON { get; set; }
-        //private ITransactionManager transactionManager;
-        //private IAccount account;
-        public Web3(string url = "http://localhost:6789") : this(url, null, true)
+        /// <summary>
+        /// 使用接入点初始化一个web3对象
+        /// </summary>
+        /// <param name="uri">接入点uri</param>
+        public Web3(string uri = "http://localhost:6789") : this(uri, null, true)
         { }
-        public Web3(string url, string privateKey, bool initChainIdAndHrp)
+        /// <summary>
+        /// 使用接入点初始化一个web3对象
+        /// </summary>
+        /// <param name="uri">接入点uri</param>
+        /// <param name="privateKey">账号的私钥<br/> 
+        /// 注：如果在初始化时直接传入私钥，则web3会在本地自动管理账号，方便开发。
+        /// 如果初始化时不传入私钥，也可以使用<see cref="InitAccount(string)"/>或者<see cref="InitAccount(Account)"/>来重新传入私钥。</param>
+        /// <param name="initChainIdAndHrp">是否自动填充ChainId和Hrp<br/> 
+        /// 注：如果初始化时不进行ChainId和Hrp的填充，后续也可以使用<see cref="InitChainIdAndHrp"/>方法来进行填充。</param>
+        public Web3(string uri, string privateKey, bool initChainIdAndHrp)
         {
-            client = new RpcClient(new Uri(url));
+            client = new RpcClient(new Uri(uri));
             InitPlatON(client);
             InitAccount(privateKey);
             if (initChainIdAndHrp) InitChainIdAndHrp();
         }
+        /// <summary>
+        /// 自动填充ChainId和Hrp
+        /// </summary>
         public void InitChainIdAndHrp()
         {
             PlatON.ChainId = PlatON.GetChainId().ToHexBigInteger();
             PlatON.Hrp = PlatON.GetAddressHrp();
         }
+        /// <summary>
+        /// 让web3对象自动管理账号
+        /// </summary>
+        /// <param name="privateKey">账号私钥</param>
         public void InitAccount(string privateKey)
         {
             Account account = null;
@@ -49,6 +67,10 @@ namespace PlatONet
             }            
             InitAccount(account);
         }
+        /// <summary>
+        /// 让web3对象自动管理账号
+        /// </summary>
+        /// <param name="account">账号</param>
         public void InitAccount(Account account)
         {
             if (PlatON == null) InitPlatON(client);
@@ -58,22 +80,40 @@ namespace PlatONet
         {
             PlatON = new PlatON(client);
         }
+        /// <summary>
+        /// 返回当前客户端版本
+        /// </summary>
+        /// <returns>当前客户端版本</returns>
         public string ClientVersion()
         {
             var result = ClientVersionAsync();
             result.Wait();
             return result.Result;
         }
+        /// <summary>
+        /// 返回当前客户端版本
+        /// </summary>
+        /// <returns>当前客户端版本</returns>
         public Task<string> ClientVersionAsync()
         {
             return client.SendRequestAsync<string>("web3_clientVersion");
         }
+        /// <summary>
+        /// 返回给定数据的keccak-256（不是标准sha3-256）
+        /// </summary>
+        /// <param name="data">加密前的数据</param>
+        /// <returns>加密后的数据</returns>
         public string Sha3(string data)
         {
             var result = Sha3Async(data);
             result.Wait();
             return result.Result;
         }
+        /// <summary>
+        /// 返回给定数据的keccak-256（不是标准sha3-256）
+        /// </summary>
+        /// <param name="data">加密前的数据</param>
+        /// <returns>加密后的数据</returns>
         public Task<string> Sha3Async(string data)
         {
             return client.SendRequestAsync<string>("web3_sha3", null,
