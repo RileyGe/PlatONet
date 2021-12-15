@@ -1,2 +1,2 @@
-- name: Introduction
-  href: intro.md
+- name: SDK安装及网络参数查询
+  href: basic.md
