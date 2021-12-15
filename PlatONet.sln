@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31402.337
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32002.185
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlatONet", "PlatONet\PlatONet.csproj", "{0D25329E-BB8A-41E3-8548-288DACB48DC1}"
 EndProject
@@ -12,7 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docs", "docs\docs.csproj", "{2FB6C2A1-B612-4DC5-8B61-DB64BC65A593}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docs", "docs\docs.csproj", "{2FB6C2A1-B612-4DC5-8B61-DB64BC65A593}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nethereum.Web3", "..\Nethereum\src\Nethereum.Web3\Nethereum.Web3.csproj", "{1D7ED8BD-50DD-4601-84CC-6BF1024D4BB1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nethereum.Signer", "..\Nethereum\src\Nethereum.Signer\Nethereum.Signer.csproj", "{89A10C60-6675-4D9C-A7C7-764470B59407}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +36,14 @@ Global
 		{2FB6C2A1-B612-4DC5-8B61-DB64BC65A593}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FB6C2A1-B612-4DC5-8B61-DB64BC65A593}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FB6C2A1-B612-4DC5-8B61-DB64BC65A593}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D7ED8BD-50DD-4601-84CC-6BF1024D4BB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D7ED8BD-50DD-4601-84CC-6BF1024D4BB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D7ED8BD-50DD-4601-84CC-6BF1024D4BB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D7ED8BD-50DD-4601-84CC-6BF1024D4BB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89A10C60-6675-4D9C-A7C7-764470B59407}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89A10C60-6675-4D9C-A7C7-764470B59407}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89A10C60-6675-4D9C-A7C7-764470B59407}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89A10C60-6675-4D9C-A7C7-764470B59407}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Nethereum-4.0.5\src\Nethereum.Web3\Nethereum.Web3.csproj" />
+    <ProjectReference Include="..\..\Nethereum\src\Nethereum.Web3\Nethereum.Web3.csproj" />
   </ItemGroup>
 
 </Project>
