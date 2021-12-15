@@ -1,2 +1,4 @@
 - name: SDK安装及网络参数查询
   href: basic.md
+- name: 智能合约操作
+  href: contract.md
