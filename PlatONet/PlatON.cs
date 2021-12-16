@@ -431,22 +431,43 @@ namespace PlatONet
                     trans.ToDict(), param.BlockNumber
                 });
         }
+        /// <summary>
+        /// 获取链ID，与<see cref="Web3.GetChainId"/>方法作用相同
+        /// </summary>
+        /// <returns>链ID</returns>
         public ulong GetChainId()
         {
             return Convert.ToUInt64(ExcuteCommand<string>(ApiMplatonods.platon_chainId.ToString()), 16);
         }
+        /// <summary>
+        /// 获取链ID，与<see cref="Web3.GetChainId"/>方法作用相同--异步操作
+        /// </summary>
+        /// <returns>链ID</returns>
         public Task<string> GetChainIdAsync()
         {
             return ExcuteCommandAsync<string>(ApiMplatonods.platon_chainId.ToString());
         }
+        /// <summary>
+        /// 获取当前网络bench32格式地址前缀
+        /// </summary>
+        /// <returns>地址前缀</returns>
         public string GetAddressHrp()
         {
             return ExcuteCommand<string>(ApiMplatonods.platon_getAddressHrp.ToString());
         }
+        /// <summary>
+        /// 获取当前网络bench32格式地址前缀--异步操作
+        /// </summary>
+        /// <returns>地址前缀</returns>
         public Task<string> GetAddressHrpAsync()
         {
             return ExcuteCommandAsync<string>(ApiMplatonods.platon_getAddressHrp.ToString());
         }
+        /// <summary>
+        /// 估算交易的Gas用量
+        /// </summary>
+        /// <param name="trans"><see cref="Transaction"/>实例，交易详情</param>
+        /// <returns>Gas用量</returns>
         public HexBigInteger EstimateGas(Transaction trans)
         {
             var dict = trans.ToDict();
@@ -458,6 +479,11 @@ namespace PlatONet
                     dict
                 });
         }
+        /// <summary>
+        /// 估算交易的Gas用量--异步操作
+        /// </summary>
+        /// <param name="trans"><see cref="Transaction"/>实例，交易详情</param>
+        /// <returns>Gas用量</returns>
         public Task<string> EstimateGasAsync(Transaction trans)
         {
             var dict = trans.ToDict();
@@ -467,6 +493,13 @@ namespace PlatONet
                     dict
                 });
         }
+        /// <summary>
+        /// 根据区块hash查询区块信息
+        /// </summary>
+        /// <param name="hash">区块hash</param>
+        /// <param name="withFullTransactions">true ：区块中带有完整的交易列表<br/>
+        /// false： 区块中只带交易hash列表</param>
+        /// <returns>区块信息</returns>
         public Block GetBlockByHash(string hash, bool withFullTransactions = true)
         {
             return ExcuteCommand<Block>(ApiMplatonods.platon_getBlockByHash.ToString(),
@@ -474,6 +507,25 @@ namespace PlatONet
                     hash, withFullTransactions
                 });
         }
+        /// <summary>
+        /// 根据区块hash查询区块信息--异步操作
+        /// </summary>
+        /// <param name="hash">区块hash</param>
+        /// <param name="withFullTransactions">true ：区块中带有完整的交易列表<br/>
+        /// false： 区块中只带交易hash列表</param>
+        /// <returns>区块信息</returns>
+        public Task<Block> GetBlockByHashAsync(string hash, bool withFullTransactions = true)
+        {
+            return ExcuteCommandAsync<Block>(ApiMplatonods.platon_getBlockByHash.ToString(),
+                paramList: new object[] {
+                    hash, withFullTransactions
+                });
+        }
+        /// <summary>
+        /// 根据区块hash查询区块信息，区块中带有完整的交易列表
+        /// </summary>
+        /// <param name="hash">区块hash</param>
+        /// <returns>区块信息</returns>
         public BlockWithTransactions GetBlockWithTransactionsByHash(string hash)
         {
             return ExcuteCommand<BlockWithTransactions>(ApiMplatonods.platon_getBlockByHash.ToString(),
@@ -481,20 +533,11 @@ namespace PlatONet
                     hash, true
                 });
         }
-        public BlockWithTransactionHashes GetBlockWithTransactionHashesByHash(string hash)
-        {
-            return ExcuteCommand<BlockWithTransactionHashes>(ApiMplatonods.platon_getBlockByHash.ToString(),
-                paramList: new object[] {
-                    hash, false
-                });
-        }
-        public Task<Block> GetBlockByHashAsync(string hash, bool withFullTransactions = true)
-        {
-            return ExcuteCommandAsync<Block>(ApiMplatonods.platon_getBlockByHash.ToString(),
-                paramList: new object[] { 
-                    hash, withFullTransactions
-                });
-        }
+        /// <summary>
+        /// 根据区块hash查询区块信息，区块中带有完整的交易列表--异步操作
+        /// </summary>
+        /// <param name="hash">区块hash</param>
+        /// <returns>区块信息</returns>
         public Task<BlockWithTransactions> GetBlockWithTransactionsByHashAsync(string hash)
         {
             return ExcuteCommandAsync<BlockWithTransactions>(ApiMplatonods.platon_getBlockByHash.ToString(),
@@ -502,6 +545,23 @@ namespace PlatONet
                     hash, true
                 });
         }
+        /// <summary>
+        /// 根据区块hash查询区块信息，区块中只带交易hash列表
+        /// </summary>
+        /// <param name="hash">区块hash</param>
+        /// <returns>区块信息</returns>
+        public BlockWithTransactionHashes GetBlockWithTransactionHashesByHash(string hash)
+        {
+            return ExcuteCommand<BlockWithTransactionHashes>(ApiMplatonods.platon_getBlockByHash.ToString(),
+                paramList: new object[] {
+                    hash, false
+                });
+        }
+        /// <summary>
+        /// 根据区块hash查询区块信息，区块中只带交易hash列表--异步操作
+        /// </summary>
+        /// <param name="hash">区块hash</param>
+        /// <returns>区块信息</returns>        
         public Task<BlockWithTransactionHashes> GetBlockWithTransactionHashesByHashAsync(string hash)
         {
             return ExcuteCommandAsync<BlockWithTransactionHashes>(ApiMplatonods.platon_getBlockByHash.ToString(),
@@ -509,6 +569,13 @@ namespace PlatONet
                     hash, false
                 });
         }
+        /// <summary>
+        /// 根据区块高度查询区块信息
+        /// </summary>
+        /// <param name="param"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <param name="withFullTransaction">true：区块中带有完整的交易列表<br/>
+        /// false：区块中只带交易hash列表</param>
+        /// <returns>区块信息</returns>
         public Block GetBlockByNumber(BlockParameter param = null, bool withFullTransaction = true)
         {
             param = param ?? BlockParameter.DEFAULT;
@@ -518,22 +585,13 @@ namespace PlatONet
                     param.BlockNumber, withFullTransaction
                 });
         }
-        public BlockWithTransactions GetBlockWithTransactionsByNumber(BlockParameter param = null)
-        {
-            param = param ?? BlockParameter.DEFAULT;
-            return ExcuteCommand<BlockWithTransactions>(ApiMplatonods.platon_getBlockByNumber.ToString(),
-                paramList: new object[] {
-                    param.BlockNumber, true
-                });
-        }
-        public BlockWithTransactionHashes GetBlockWithTransactionHashesByNumber(BlockParameter param = null)
-        {
-            param = param ?? BlockParameter.DEFAULT;
-            return ExcuteCommand<BlockWithTransactionHashes>(ApiMplatonods.platon_getBlockByNumber.ToString(),
-                paramList: new object[] {
-                    param.BlockNumber, false
-                });
-        }
+        /// <summary>
+        /// 根据区块高度查询区块信息--异步操作
+        /// </summary>
+        /// <param name="param"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <param name="withFullTransaction">true：区块中带有完整的交易列表<br/>
+        /// false：区块中只带交易hash列表</param>
+        /// <returns>区块信息</returns>
         public Task<Block> GetBlockByNumberAsync(BlockParameter param = null, bool withFullTransactions = true)
         {
             param = param ?? BlockParameter.DEFAULT;
@@ -542,6 +600,24 @@ namespace PlatONet
                     param.BlockNumber, withFullTransactions
                 });
         }
+        /// <summary>
+        /// 根据区块高度查询区块信息，区块中带有完整的交易列表
+        /// </summary>
+        /// <param name="param"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>区块信息</returns>
+        public BlockWithTransactions GetBlockWithTransactionsByNumber(BlockParameter param = null)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommand<BlockWithTransactions>(ApiMplatonods.platon_getBlockByNumber.ToString(),
+                paramList: new object[] {
+                    param.BlockNumber, true
+                });
+        }
+        /// <summary>
+        /// 根据区块高度查询区块信息，区块中带有完整的交易列表--异步操作
+        /// </summary>
+        /// <param name="param"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>区块信息</returns>
         public Task<BlockWithTransactions> GetBlockWithTransactionsByNumberAsync(BlockParameter param = null)
         {
             param = param ?? BlockParameter.DEFAULT;
@@ -550,6 +626,24 @@ namespace PlatONet
                     param.BlockNumber, true
                 });
         }
+        /// <summary>
+        /// 根据区块高度查询区块信息，区块中只带交易hash列表
+        /// </summary>
+        /// <param name="param"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>区块信息</returns>
+        public BlockWithTransactionHashes GetBlockWithTransactionHashesByNumber(BlockParameter param = null)
+        {
+            param = param ?? BlockParameter.DEFAULT;
+            return ExcuteCommand<BlockWithTransactionHashes>(ApiMplatonods.platon_getBlockByNumber.ToString(),
+                paramList: new object[] {
+                    param.BlockNumber, false
+                });
+        }
+        /// <summary>
+        /// 根据区块高度查询区块信息，区块中只带交易hash列表--异步操作
+        /// </summary>
+        /// <param name="param"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>区块信息</returns>
         public Task<BlockWithTransactionHashes> GetBlockWithTransactionHashesByNumberAsync(BlockParameter param = null)
         {
             param = param ?? BlockParameter.DEFAULT;
@@ -558,6 +652,12 @@ namespace PlatONet
                     param.BlockNumber, false
                 });
         }
+        /// <summary>
+        /// 根据区块hash查询区块中指定序号的交易
+        /// </summary>
+        /// <param name="hash">区块hash</param>
+        /// <param name="index">交易在区块中的序号</param>
+        /// <returns>交易信息</returns>
         public Nethereum.RPC.Eth.DTOs.Transaction GetTransactionByBlockHashAndIndex(string hash, uint index = 0)
         {
             return ExcuteCommand<Nethereum.RPC.Eth.DTOs.Transaction>(ApiMplatonods.platon_getTransactionByBlockHashAndIndex.ToString(),
@@ -566,6 +666,12 @@ namespace PlatONet
                     hash, string.Format("0x{0:X}", index)
                 });
         }
+        /// <summary>
+        /// 根据区块hash查询区块中指定序号的交易--异步操作
+        /// </summary>
+        /// <param name="hash">区块hash</param>
+        /// <param name="index">交易在区块中的序号</param>
+        /// <returns>交易信息</returns>
         public Task<Nethereum.RPC.Eth.DTOs.Transaction> GetTransactionByBlockHashAndIndexAsync(string hash, uint index = 0)
         {
             return ExcuteCommandAsync<Nethereum.RPC.Eth.DTOs.Transaction>(ApiMplatonods.platon_getTransactionByBlockHashAndIndex.ToString(),
@@ -574,6 +680,12 @@ namespace PlatONet
                     hash, string.Format("0x{0:X}", index)
                 });
         }
+        /// <summary>
+        /// 根据区块高度查询区块中指定序号的交易
+        /// </summary>
+        /// <param name="param"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <param name="index">交易在区块中的序号</param>
+        /// <returns>交易信息</returns>
         public Nethereum.RPC.Eth.DTOs.Transaction GetTransactionByBlockNumberAndIndex(BlockParameter param = null, uint index = 0)
         {
             param = param ?? BlockParameter.DEFAULT;
@@ -583,6 +695,12 @@ namespace PlatONet
                     param.BlockNumber, string.Format("0x{0:X}", index)
                 });
         }
+        /// <summary>
+        /// 根据区块高度查询区块中指定序号的交易--异步操作
+        /// </summary>
+        /// <param name="param"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <param name="index">交易在区块中的序号</param>
+        /// <returns>交易信息</returns>
         public Task<Nethereum.RPC.Eth.DTOs.Transaction> GetTransactionByBlockNumberAndIndexAsync(BlockParameter param = null, uint index = 0)
         {
             param = param ?? BlockParameter.DEFAULT;
@@ -592,6 +710,11 @@ namespace PlatONet
                     param.BlockNumber, string.Format("0x{0:X}", index)
                 });
         }
+        /// <summary>
+        /// 根据交易hash查询交易回执
+        /// </summary>
+        /// <param name="hash">交易hash</param>
+        /// <returns>交易回执</returns>
         public TransactionReceipt GetTransactionReceipt(string hash)
         {
             return ExcuteCommand<TransactionReceipt>(ApiMplatonods.platon_getTransactionReceipt.ToString(),
@@ -600,6 +723,11 @@ namespace PlatONet
                     hash
                 });
         }
+        /// <summary>
+        /// 根据交易hash查询交易回执--异步操作
+        /// </summary>
+        /// <param name="hash">交易hash</param>
+        /// <returns>交易回执</returns>
         public Task<TransactionReceipt> GetTransactionReceiptAsync(string hash)
         {
             return ExcuteCommandAsync<TransactionReceipt>(ApiMplatonods.platon_getTransactionReceipt.ToString(),
@@ -608,6 +736,14 @@ namespace PlatONet
                     hash
                 });
         }
+        /// <summary>
+        /// 创建一个过滤器，以便在客户端接收到匹配的whisper消息时进行通知
+        /// </summary>
+        /// <param name="fromBlock">起始区块</param>
+        /// <param name="toBlock">终止区块</param>
+        /// <param name="address">地址</param>
+        /// <param name="topics">主题</param>
+        /// <returns>过滤器ID</returns>
         public ulong NewFilter(BlockParameter fromBlock, BlockParameter toBlock, string address, object[] topics)
         {
             Dictionary<string, object> dict = new Dictionary<string, object>
@@ -621,6 +757,14 @@ namespace PlatONet
             var id = ExcuteCommand<string>(ApiMplatonods.platon_newFilter.ToString(), dict);
             return Convert.ToUInt64(id, 16);
         }
+        /// <summary>
+        /// 创建一个过滤器，以便在客户端接收到匹配的whisper消息时进行通知--异步操作
+        /// </summary>
+        /// <param name="fromBlock">起始区块</param>
+        /// <param name="toBlock">终止区块</param>
+        /// <param name="address">地址</param>
+        /// <param name="topics">主题</param>
+        /// <returns>过滤器ID</returns>
         public Task<string> NewFilterAsync(BlockParameter fromBlock, BlockParameter toBlock, string address, object[] topics)
         {
             Dictionary<string, object> dict = new Dictionary<string, object>
@@ -633,52 +777,106 @@ namespace PlatONet
             //if (Client == null) throw new NullReferenceException("RpcRequestHandler Client is null");
             return ExcuteCommandAsync<string>(ApiMplatonods.platon_newFilter.ToString(), dict);
         }
+        /// <summary>
+        /// 在节点中创建一个过滤器，以便当新块生成时进行通知。要检查状态是否变化
+        /// </summary>
+        /// <returns>过滤器ID</returns>
         public ulong NewBlockFilter()
         {
             return Convert.ToUInt64(ExcuteCommand<string>(ApiMplatonods.platon_newBlockFilter.ToString()), 16);
         }
+        /// <summary>
+        /// 在节点中创建一个过滤器，以便当新块生成时进行通知。要检查状态是否变化--异步操作
+        /// </summary>
+        /// <returns>过滤器ID</returns>
         public Task<string> NewBlockFilterAsync()
         {
             return ExcuteCommandAsync<string>(ApiMplatonods.platon_newBlockFilter.ToString());
         }
+        /// <summary>
+        /// 在节点中创建一个过滤器，以便当产生挂起交易时进行通知。 要检查状态是否发生变化
+        /// </summary>
+        /// <returns>过滤器ID</returns>
         public ulong NewPendingTransactionFilter()
         {
             return Convert.ToUInt64(ExcuteCommand<string>(ApiMplatonods.platon_newPendingTransactionFilter.ToString()), 16);
         }
+        /// <summary>
+        /// 在节点中创建一个过滤器，以便当产生挂起交易时进行通知。 要检查状态是否发生变化--异步操作
+        /// </summary>
+        /// <returns>过滤器ID</returns>
         public Task<string> NewPendingTransactionFilterAsync()
         {
             return ExcuteCommandAsync<string>(ApiMplatonods.platon_newPendingTransactionFilter.ToString());
         }
+        /// <summary>
+        /// 卸载具有指定编号的过滤器。当不再需要监听时，总是需要执行该调用
+        /// </summary>
+        /// <param name="filterId">过滤器ID</param>
+        /// <returns>是否卸载成功</returns>
         public bool UninstallFilter(ulong filterId)
         {
             return ExcuteCommand<bool>(ApiMplatonods.platon_newPendingTransactionFilter.ToString(),
                 string.Format("0x{0:X}", filterId));
         }
+        /// <summary>
+        /// 卸载具有指定编号的过滤器。当不再需要监听时，总是需要执行该调用--异步操作
+        /// </summary>
+        /// <param name="filterId">过滤器ID</param>
+        /// <returns>是否卸载成功</returns>
         public Task<bool> UninstallFilterAsync(ulong filterId)
         {
             return ExcuteCommandAsync<bool>(ApiMplatonods.platon_newPendingTransactionFilter.ToString(),
                 string.Format("0x{0:X}", filterId));
         }
+        /// <summary>
+        /// 轮询指定的过滤器，并返回自上次轮询之后新生成的日志数组
+        /// </summary>
+        /// <param name="filterId">过滤器ID</param>
+        /// <returns>自上次轮询之后新生成的日志数组</returns>
         public FilterLog[] GetFilterChanges(ulong filterId)
         {
             return ExcuteCommand<FilterLog[]>(ApiMplatonods.platon_getFilterChanges.ToString(),
                 string.Format("0x{0:X}", filterId));
         }
+        /// <summary>
+        /// 轮询指定的过滤器，并返回自上次轮询之后新生成的日志数组--异步操作
+        /// </summary>
+        /// <param name="filterId">过滤器ID</param>
+        /// <returns>自上次轮询之后新生成的日志数组</returns>
         public Task<FilterLog[]> GetFilterChangesAsync(ulong filterId)
         {
             return ExcuteCommandAsync<FilterLog[]>(ApiMplatonods.platon_getFilterChanges.ToString(),
                 string.Format("0x{0:X}", filterId));
         }
+        /// <summary>
+        /// 轮询指定的过滤器，并返回自上次轮询之后新生成的日志数组
+        /// </summary>
+        /// <param name="filterId">过滤器ID</param>
+        /// <returns>自上次轮询之后新生成的日志数组</returns>
         public string[] GetFilterLogs(ulong filterId)
         {
             return ExcuteCommand<string[]>(ApiMplatonods.platon_getFilterLogs.ToString(),
                 string.Format("0x{0:X}", filterId));
         }
+        /// <summary>
+        /// 轮询指定的过滤器，并返回自上次轮询之后新生成的日志数组--异步操作
+        /// </summary>
+        /// <param name="filterId">过滤器ID</param>
+        /// <returns>自上次轮询之后新生成的日志数组</returns>
         public Task<string[]> GetFilterLogsAsync(ulong filterId)
         {
             return ExcuteCommandAsync<string[]>(ApiMplatonods.platon_getFilterLogs.ToString(),
                 string.Format("0x{0:X}", filterId));
         }
+        /// <summary>
+        /// 返回指定过滤器中的所有日志
+        /// </summary>
+        /// <param name="fromBlock">起始区块</param>
+        /// <param name="toBlock">终止区块</param>
+        /// <param name="address">地址</param>
+        /// <param name="topics">主题</param>
+        /// <returns>指定过滤器中的日志列表</returns>
         public FilterLog[] GetLogs(BlockParameter fromBlock, BlockParameter toBlock, string address, object[] topics)
         {
 
@@ -692,6 +890,14 @@ namespace PlatONet
             //if (Client == null) throw new NullReferenceException("RpcRequestHandler Client is null");
             return ExcuteCommand<FilterLog[]>(ApiMplatonods.platon_getFilterLogs.ToString(), dict);
         }
+        /// <summary>
+        /// 返回指定过滤器中的所有日志--异步操作
+        /// </summary>
+        /// <param name="fromBlock">起始区块</param>
+        /// <param name="toBlock">终止区块</param>
+        /// <param name="address">地址</param>
+        /// <param name="topics">主题</param>
+        /// <returns>指定过滤器中的日志列表</returns>
         public Task<FilterLog[]> GetLogsAsync(BlockParameter fromBlock, BlockParameter toBlock, string address, object[] topics)
         {
 
@@ -705,10 +911,18 @@ namespace PlatONet
             //if (Client == null) throw new NullReferenceException("RpcRequestHandler Client is null");
             return ExcuteCommandAsync<FilterLog[]>(ApiMplatonods.platon_getFilterLogs.ToString(), dict);
         }
+        /// <summary>
+        /// 查询待处理交易
+        /// </summary>
+        /// <returns>待处理交易</returns>
         public Nethereum.RPC.Eth.DTOs.Transaction[] PendingTransactions()
         {
             return ExcuteCommand<Nethereum.RPC.Eth.DTOs.Transaction[]>(ApiMplatonods.platon_pendingTransactions.ToString());
         }
+        /// <summary>
+        /// 查询待处理交易--异步操作
+        /// </summary>
+        /// <returns>待处理交易</returns>
         public Task<Nethereum.RPC.Eth.DTOs.Transaction[]> PendingTransactionsAsync()
         {
             return ExcuteCommandAsync<Nethereum.RPC.Eth.DTOs.Transaction[]>(ApiMplatonods.platon_pendingTransactions.ToString());
@@ -718,11 +932,26 @@ namespace PlatONet
         //    var result = ExcuteCommandAsync<string>(method, paramList);
         //    result.Wait();
         //    return result.Result.HexToBigInteger(false);
-        //}        
+        //}
+
+        /// <summary>
+        /// 便捷方法，以异步的方式执行命令
+        /// </summary>
+        /// <typeparam name="T">返回值的类型</typeparam>
+        /// <param name="method">方法名称</param>
+        /// <param name="paramList">参数列表</param>
+        /// <returns>命令返回结果</returns>
         public Task<T> ExcuteCommandAsync<T>(string method, params object[] paramList)
         {
             return client.SendRequestAsync<T>(method, null, paramList: paramList);
         }
+        /// <summary>
+        /// 便捷方法，以同步的方式执行命令
+        /// </summary>
+        /// <typeparam name="T">返回值的类型</typeparam>
+        /// <param name="method">方法名称</param>
+        /// <param name="paramList">参数列表</param>
+        /// <returns>命令返回结果</returns>
         public T ExcuteCommand<T>(string method, params object[] paramList)
         {
             var result = ExcuteCommandAsync<T>(method, paramList);

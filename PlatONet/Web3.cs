@@ -241,7 +241,7 @@ namespace PlatONet
             return PlatON.ExcuteCommandAsync<string>("debug_economicConfig");
         }
         /// <summary>
-        /// 获取链ID
+        /// 获取链ID，与<see cref="PlatON.GetChainId"/>方法作用相同
         /// </summary>
         /// <returns>链ID</returns>
         public ulong GetChainId()
@@ -249,7 +249,7 @@ namespace PlatONet
             return Convert.ToUInt64(PlatON.ExcuteCommand<string>(ApiMplatonods.platon_chainId.ToString()), 16);
         }
         /// <summary>
-        /// 获取链ID--异步操作
+        /// 获取链ID，与<see cref="PlatON.GetChainId"/>方法作用相同--异步操作
         /// </summary>
         /// <returns>链ID</returns>
         public Task<string> GetChainIdAsync()
