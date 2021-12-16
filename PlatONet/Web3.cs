@@ -9,9 +9,15 @@ using System.Collections.Generic;
 
 namespace PlatONet
 {
+    /// <summary>
+    /// Web3对象，PlatONet的最主要入口
+    /// </summary>
     public class Web3
     {
         private IClient client;
+        /// <summary>
+        /// 用于连接网络的JsonRpc客户端
+        /// </summary>
         public IClient Client
         {
             get
@@ -175,7 +181,7 @@ namespace PlatONet
         }
         /// <summary>
         /// 获得一个<see cref="PlatONContract"/>的实例。<br/>
-        /// 更详细操作请参照文档《智能合约操作》章节
+        /// 更详细操作请参照文档《智能合约操作》章节。
         /// </summary>
         /// <param name="abi">智能合约的abi</param>
         /// <param name="contractAddress">智能合约地址</param>

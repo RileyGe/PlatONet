@@ -1,4 +1,4 @@
-﻿using Nethereum.JsonRpc.Client;
+using Nethereum.JsonRpc.Client;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,8 +8,15 @@ using Nethereum.Hex.HexTypes;
 
 namespace PlatONet
 {
+    /// <summary>
+    /// PlatON网络相关的操作对象
+    /// </summary>
     public class PlatON
     {
+        /// <summary>
+        /// 使用JsonRpc初始化一个<see cref="PlatON"/>实例
+        /// </summary>
+        /// <param name="client">JsonRpc客户端</param>
         public PlatON(IClient client)
         {
             this.client = client;
@@ -20,6 +27,9 @@ namespace PlatONet
             PPOS = new PPOS(this);
         }
         private IClient client;
+        /// <summary>
+        /// JsonRpc客户端
+        /// </summary>
         public IClient Client
         {
             get
@@ -31,9 +41,27 @@ namespace PlatONet
                 client = value;
             }
         }
+        /// <summary>
+        /// 账号信息<br/>
+        /// 为了便于与PlatON网络进行交互，可以将账号信息保存到<see cref="Account"/>属性中。如果操作需要使用账号进行签名，则会自动调用该账号信息进行签名，便于操作。<br/>
+        /// 用户也可以选择手动签名，而不将账号信息保存到<see cref="Account"/>属性中。
+        /// </summary>
         public Account Account { get; set; }
+        /// <summary>
+        /// 链ID，PlatONet兼容PlatON/Alaya主网、开发网、私有网，不同的网络链ID可能不同。
+        /// </summary>
         public HexBigInteger ChainId { get; set; }
+        /// <summary>
+        /// bech32地址前缀，与<see cref="ChainId"/>类似，不同的网络<see cref="Hrp"/>可能不同。
+        /// </summary>
         public string Hrp { get; set; }
+        /// <summary>
+        /// 获得一个<see cref="PlatONContract"/>的实例。功能与<see cref="Web3"/>中的<see cref="Web3.GetContract(string, string)"/>方法类似。<br/>
+        /// 更详细操作请参照文档《智能合约操作》章节。
+        /// </summary>
+        /// <param name="abi">智能合约的abi</param>
+        /// <param name="contractAddress">智能合约地址</param>
+        /// <returns><see cref="PlatONContract"/>实例</returns>
         public PlatONContract GetContract(string abi, string address)
         {
             return new PlatONContract(client, abi, address, this);
