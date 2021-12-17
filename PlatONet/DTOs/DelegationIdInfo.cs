@@ -5,19 +5,19 @@ namespace PlatONet
 {
     public class DelegationIdInfo
     {
-        /**
-         * 验证人节点的地址
-         */
+        /// <summary>
+        /// 验证人节点的地址
+        /// </summary>
         [JsonProperty("Addr")]
         public string Address { get; set; }
-        /**
-         * 验证人的节点Id
-         */
+        /// <summary>
+        /// 验证人的节点Id
+        /// </summary>
         [JsonProperty("NodeId")]
         public string NodeId { get; set; }
-        /**
-         * 发起质押时的区块高度
-         */
+        /// <summary>
+        /// 发起质押时的区块高度
+        /// </summary>
         [JsonProperty("StakingBlockNum")]
         public HexBigInteger StakingBlockNum { get; set; }
         public override string ToString()

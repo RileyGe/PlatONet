@@ -85,6 +85,15 @@ namespace PlatONet
             if (Account != null) trans.Nonce = trans.Nonce ?? GetTransactionCount(Account.ToString());
             return trans;
         }
+        public async Task<Transaction> FillTransactionWithDefaultValueAsync(Transaction trans = null)
+        {
+            trans = trans ?? new Transaction();
+            //trans.Nonce = trans.Nonce ?? GetTransactionCount(Account.GetAddress().ToString());
+            trans.GasPrice = trans.GasPrice ?? await GasPriceAsync();
+            trans.GasLimit = trans.GasLimit ?? await EstimateGasAsync(trans);
+            if (Account != null) trans.Nonce = trans.Nonce ?? await GetTransactionCountAsync(Account.ToString());
+            return trans;
+        }
         #region rpc requests
         /// <summary>
         /// 返回当前协议版本
@@ -484,14 +493,15 @@ namespace PlatONet
         /// </summary>
         /// <param name="trans"><see cref="Transaction"/>实例，交易详情</param>
         /// <returns>Gas用量</returns>
-        public Task<string> EstimateGasAsync(Transaction trans)
+        public async Task<HexBigInteger> EstimateGasAsync(Transaction trans)
         {
             var dict = trans.ToDict();
             if (dict.ContainsKey("gas")) dict.Remove("gas");
-            return ExcuteCommandAsync<string>(ApiMplatonods.platon_estimateGas.ToString(),
+            var result = await ExcuteCommandAsync<string>(ApiMplatonods.platon_estimateGas.ToString(),
                 paramList: new object[]{
                     dict
                 });
+            return new HexBigInteger(result);
         }
         /// <summary>
         /// 根据区块hash查询区块信息

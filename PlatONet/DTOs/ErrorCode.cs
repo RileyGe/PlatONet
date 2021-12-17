@@ -1,371 +1,393 @@
-﻿namespace PlatONet
+﻿using System;
+
+namespace PlatONet
 {
-    public class ErrorCode
+    /// <summary>
+    /// PlatONet异常
+    /// </summary>
+    public class PlatONException : Exception
     {
-        /**
-         * 成功
-         */
+        public int ErrorCode { get; set; }
+        /// <summary>
+        /// 使用ErrorCode初如化异常
+        /// </summary>
+        /// <param name="errorCode">ErrorCode</param>
+        public PlatONException(int errorCode) : base(PlatONet.ErrorCode.GetErrorMsg(errorCode))
+        {
+            ErrorCode = errorCode;
+        }
+    }
+    /// <summary>
+    /// 错误信息
+    /// </summary>
+    public static class ErrorCode
+    {
+        /// <summary>
+        /// 成功
+        /// </summary>
         public const int SUCCESS = 0;
-        /**
-         * 系统内部错误
-         */
+        /// <summary>
+        /// 系统内部错误
+        /// </summary>
         public const int SYSTEM_ERROR = 1;
-        /**
-         * 对象没有找到
-         */
+        /// <summary>
+        /// 对象没有找到
+        /// </summary>
         public const int OBJECT_NOT_FOUND = 2;
-        /**
-         * 参数错误
-         */
+        /// <summary>
+        /// 参数错误
+        /// </summary>
         public const int INVALID_PARAMETER = 3;
-
-        /**
-         * PlatON内置合约执行出错
-         */
+        /// <summary>
+        /// PlatON内置合约执行出错
+        /// </summary>
         public const int PlatON_Precompiled_Contract_EXEC_FAILED = 4;
-        /**
-         * bls key 长度有误
-         */
+        /// <summary>
+        /// bls key 长度有误
+        /// </summary>
         public const int WRONG_BLS_KEY_LENGTH = 301000;
-        /**
-         * bls key 证明有误
-         */
+        /// <summary>
+        /// bls key 证明有误
+        /// </summary>
         public const int WRONG_BLS_KEY_PROOF = 301001;
-        /**
-         * 节点描述信息长度有误
-         */
+        /// <summary>
+        /// 节点描述信息长度有误
+        /// </summary>
         public const int WRONG_DESCRIPTION_LENGTH = 301002;
-        /**
-         * 程序版本签名有误
-         */
+        /// <summary>
+        /// 程序版本签名有误
+        /// </summary>
         public const int WRONG_PROGRAM_VERSION_SIGN = 301003;
-        /**
-         * 程序的版本太低
-         */
+        /// <summary>
+        /// 程序的版本太低
+        /// </summary>
         public const int PROGRAM_VERSION_SIGN_TOO_LOW = 301004;
-        /**
-         * 版本声明失败
-         */
+        /// <summary>
+        /// 版本声明失败
+        /// </summary>
         public const int DELCARE_VERSION_FAILED = 301005;
-        /**
-         * 发起交易账户必须和发起质押账户是同一个
-         */
+        /// <summary>
+        /// 发起交易账户必须和发起质押账户是同一个
+        /// </summary>
         public const int ADDRESS_MUST_SAME_AS_INITIATED_STAKING = 301006;
-
-        /**
-         * 质押的金额太低
-         */
+        /// <summary>
+        /// 质押的金额太低
+        /// </summary>
         public const int STAKING_DEPOSIT_TOO_LOW = 301100;
-        /**
-         * 候选人信息已经存在
-         */
+        /// <summary>
+        /// 候选人信息已经存在
+        /// </summary>
         public const int CANDIDATE_ALREADY_EXIST = 301101;
-        /**
-         * 候选人信息不存在
-         */
+        /// <summary>
+        /// 候选人信息不存在
+        /// </summary>
         public const int CANDIDATE_NOT_EXIST = 301102;
-        /**
-         * 候选人状态已失效
-         */
+        /// <summary>
+        /// 候选人状态已失效
+        /// </summary>
         public const int CANDIDATE_STATUS_INVALIDED = 301103;
-        /**
-         * 增持质押金额太低
-         */
+        /// <summary>
+        /// 增持质押金额太低
+        /// </summary>
         public const int INCREASE_STAKE_TOO_LOW = 301104;
-        /**
-         * 委托金额太低
-         */
+        /// <summary>
+        /// 委托金额太低
+        /// </summary>
         public const int DELEGATE_DEPOSIT_TOO_LOW = 301105;
-        /**
-         * 该账户不允许发起委托
-         */
+        /// <summary>
+        /// 该账户不允许发起委托
+        /// </summary>
         public const int ACCOUNT_NOT_ALLOWED_DELEGATING = 301106;
-        /**
-         * 该候选人不接受委托
-         */
+        /// <summary>
+        /// 该候选人不接受委托
+        /// </summary>
         public const int CANDIDATE_NOT_ALLOWED_DELEGATE = 301107;
-        /**
-         * 撤销委托的金额太低
-         */
+        /// <summary>
+        /// 撤销委托的金额太低
+        /// </summary>
         public const int WITHDRAW_DELEGATE_NOT_EXIST = 301108;
-        /**
-         * 委托详情不存在
-         */
+        /// <summary>
+        /// 委托详情不存在
+        /// </summary>
         public const int DELEGATE_NOT_EXIST = 301109;
-        /**
-         * von操作类型有误 (非自由金额或非锁仓金额)
-         */
+        /// <summary>
+        /// von操作类型有误 (非自由金额或非锁仓金额)
+        /// </summary>
         public const int WRONG_VON_OPERATION_TYPE = 301110;
-        /**
-         * 账户的余额不足
-         */
+        /// <summary>
+        /// 账户的余额不足
+        /// </summary>
         public const int ACCOUNT_BALANCE_NOT_ENOUGH = 301111;
-        /**
-         * 区块高度和预期不匹配
-         */
+        /// <summary>
+        /// 区块高度和预期不匹配
+        /// </summary>
         public const int BLOCKNUMBER_DISORDERED = 301112;
-        /**
-         * 委托信息中余额不足
-         */
+        /// <summary>
+        /// 委托信息中余额不足
+        /// </summary>
         public const int DELEGATE_VON_NOT_ENOUGH = 301113;
-        /**
-         * 撤销委托时金额计算有误
-         */
+        /// <summary>
+        /// 撤销委托时金额计算有误
+        /// </summary>
         public const int WRONG_WITHDRAW_DELEGATE_VON = 301114;
-        /**
-         * 验证人信息不存在
-         */
+        /// <summary>
+        /// 验证人信息不存在
+        /// </summary>
         public const int VALIDATOR_NOT_EXIST = 301115;
-        /**
-         * 参数有误
-         */
+        /// <summary>
+        /// 参数有误
+        /// </summary>
         public const int WRONG_FUNCTION_PARAM = 301116;
-        /**
-         * 惩罚类型有误
-         */
+        /// <summary>
+        /// 惩罚类型有误
+        /// </summary>
         public const int WRONG_SLASH_TYPE = 301117;
-        /**
-         * 惩罚扣除的金额溢出
-         */
+        /// <summary>
+        /// 惩罚扣除的金额溢出
+        /// </summary>
         public const int SLASH_AMOUNT_TOO_LARGE = 301118;
-        /**
-         * 惩罚削减质押信息时金额计算有误
-         */
+        /// <summary>
+        /// 惩罚削减质押信息时金额计算有误
+        /// </summary>
         public const int WRONG_SLASH_CANDIDATE_VON = 301119;
-        /**
-         * 拉取结算周期验证人列表失败
-         */
+        /// <summary>
+        /// 拉取结算周期验证人列表失败
+        /// </summary>
         public const int GETTING_VERIFIERLIST_FAILED = 301200;
-        /**
-         * 拉取共识周期验证人列表失败
-         */
+        /// <summary>
+        /// 拉取共识周期验证人列表失败
+        /// </summary>
         public const int GETTING_VALIDATORLIST_FAILED = 301201;
-        /**
-         * 拉取候选人列表失败
-         */
+        /// <summary>
+        /// 拉取候选人列表失败
+        /// </summary>
         public const int GETTING_CANDIDATELIST_FAILED = 301202;
-        /**
-         * 拉取委托关联映射关系失败
-         */
+        /// <summary>
+        /// 拉取委托关联映射关系失败
+        /// </summary>
         public const int GETTING_DELEGATE_FAILED = 301203;
-        /**
-         * 查询候选人详情失败
-         */
+        /// <summary>
+        /// 查询候选人详情失败
+        /// </summary>
         public const int QUERY_CANDIDATE_INFO_FAILED = 301204;
-        /**
-         * 查询委托详情失败
-         */
+        /// <summary>
+        /// 查询委托详情失败
+        /// </summary>
         public const int QUERY_DELEGATE_INFO_FAILED = 301205;
 
-        /**
-         * 链上生效版本没有找到
-         */
+        /// <summary>
+        /// 链上生效版本没有找到
+        /// </summary>
         public const int ACTIVE_VERSION_NOT_FOUND = 302001;
-        /**
-         * 投票选项错误
-         */
+        /// <summary>
+        /// 投票选项错误
+        /// </summary>
         public const int VOTE_OPTION_ERROR = 302002;
-        /**
-         * 提案类型错误
-         */
+        /// <summary>
+        /// 提案类型错误
+        /// </summary>
         public const int PROPOSAL_TYPE_ERROR = 302003;
-        /**
-         * 提案ID为空
-         */
+        /// <summary>
+        /// 提案ID为空
+        /// </summary>
         public const int PROPOSAL_ID_EMPTY = 302004;
-        /**
-         * 提案ID已经存在
-         */
+        /// <summary>
+        /// 提案ID已经存在
+        /// </summary>
         public const int PROPOSAL_ID_ALREADY_EXISTS = 302005;
-        /**
-         * 提案没有找到
-         */
+        /// <summary>
+        /// 提案没有找到
+        /// </summary>
         public const int PROPOSAL_NOT_FOUND = 302006;
-        /**
-         * PIPID为空
-         */
+        /// <summary>
+        /// PIPID为空
+        /// </summary>
         public const int PIPID_EMPTY = 302007;
-        /**
-         * PIPID已经存在
-         */
+        /// <summary>
+        /// PIPID已经存在
+        /// </summary>
         public const int PIPID_ALREADY_EXISTS = 302008;
-        /**
-         * 投票持续的共识轮数量太小
-         */
+        /// <summary>
+        /// 投票持续的共识轮数量太小
+        /// </summary>
         public const int ENDVOTINGROUNDS_TOO_SMALL = 302009;
-        /**
-         * 投票持续的共识轮数量太大
-         */
+        /// <summary>
+        /// 投票持续的共识轮数量太大
+        /// </summary>
         public const int ENDVOTINGROUNDS_TOO_LARGE = 302010;
-        /**
-         * 新版本的大版本应该大于当前生效版本的大版本
-         */
+        /// <summary>
+        /// 新版本的大版本应该大于当前生效版本的大版本
+        /// </summary>
         public const int NEWVERSION_SHOULD_LARGE_CURRENT_ACTIVE_VERSION = 302011;
-        /**
-         * 有另一个在投票期的升级提案
-         */
+        /// <summary>
+        /// 有另一个在投票期的升级提案
+        /// </summary>
         public const int ANOTHER_VERSION_PROPOSAL_AT_VOTING_STAGE = 302012;
-        /**
-         * 有另一个预生效的升级提案
-         */
+        /// <summary>
+        /// 有另一个预生效的升级提案
+        /// </summary>
         public const int ANOTHER_VERSION_PROPOSAL_AT_PRE_ACTIVE_STAGE = 302013;
-        /**
-         * 有另一个在投票期的取消提案
-         */
+        /// <summary>
+        /// 有另一个在投票期的取消提案
+        /// </summary>
         public const int ANOTHER_CANCEL_PROPOSAL_AT_VOTING_STAGE = 302014;
-        /**
-         * 待取消的(升级)提案没有找到
-         */
+        /// <summary>
+        /// 待取消的(升级)提案没有找到
+        /// </summary>
         public const int CANCELED_PROPOSAL_NOT_FOUND = 302015;
-        /**
-         * 待取消的提案不是升级提案
-         */
+        /// <summary>
+        /// 待取消的提案不是升级提案
+        /// </summary>
         public const int CANCELED_PROPOSAL_NOT_VERSION_TYPE = 302016;
-        /**
-         * 待取消的(升级)提案不在投票期
-         */
+        /// <summary>
+        /// 待取消的(升级)提案不在投票期
+        /// </summary>
         public const int CANCELED_PROPOSAL_NOT_AT_VOTING_STAGE = 302017;
-        /**
-         * 提案人NodeID为空
-         */
+        /// <summary>
+        /// 提案人NodeID为空
+        /// </summary>
         public const int PROPOSER_EMPTY = 302018;
-        /**
-         * 验证人详情没有找到
-         */
+        /// <summary>
+        /// 验证人详情没有找到
+        /// </summary>
         public const int VERIFIER_DETAIL_INFO_NOT_FOUND = 302019;
-        /**
-         * 验证人状态为无效状态
-         */
+        /// <summary>
+        /// 验证人状态为无效状态
+        /// </summary>
         public const int VERIFIER_STATUS_INVALID = 302020;
-        /**
-         * 发起交易账户和发起质押账户不是同一个
-         */
+        /// <summary>
+        /// 发起交易账户和发起质押账户不是同一个
+        /// </summary>
         public const int TX_CALLER_DIFFER_FROM_STAKING = 302021;
-        /**
-         * 发起交易的节点不是验证人
-         */
+        /// <summary>
+        /// 发起交易的节点不是验证人
+        /// </summary>
         public const int TX_CALLER_NOT_VERIFIER = 302022;
-        /**
-         * 发起交易的节点不是候选人
-         */
+        /// <summary>
+        /// 发起交易的节点不是候选人
+        /// </summary>
         public const int TX_CALLER_NOT_CANDIDATE = 302023;
-        /**
-         * 版本签名错误
-         */
+        /// <summary>
+        /// 版本签名错误
+        /// </summary>
         public const int VERSION_SIGN_ERROR = 302024;
-        /**
-         * 验证人没有升级到新版本
-         */
+        /// <summary>
+        /// 验证人没有升级到新版本
+        /// </summary>
         public const int VERIFIER_NOT_UPGRADED = 302025;
-        /**
-         * 提案不在投票期
-         */
+        /// <summary>
+        /// 提案不在投票期
+        /// </summary>
         public const int PROPOSAL_NOT_AT_VOTING_STAGE = 302026;
-        /**
-         * 投票重复
-         */
+        /// <summary>
+        /// 投票重复
+        /// </summary>
         public const int VOTE_DUPLICATED = 302027;
-        /**
-         * 声明的版本错误
-         */
+        /// <summary>
+        /// 声明的版本错误
+        /// </summary>
         public const int DECLARE_VERSION_ERROR = 302028;
-        /**
-         * 把节点声明的版本通知Staking时出错
-         */
+        /// <summary>
+        /// 把节点声明的版本通知Staking时出错
+        /// </summary>
         public const int NOTIFY_STAKING_DECLARED_VERSION_ERROR = 302029;
-        /**
-         * 提案结果没有找到
-         */
+        /// <summary>
+        /// 提案结果没有找到
+        /// </summary>
         public const int TALLY_RESULT_NOT_FOUND = 302030;
-        /**
-         * 不支持的治理参数
-         */
+        /// <summary>
+        /// 不支持的治理参数
+        /// </summary>
         public const int UNSUPPORTED_GOVERN_PARAMETER = 302031;
-        /**
-         * 有另一个在投票期的参数提案
-         */
+        /// <summary>
+        /// 有另一个在投票期的参数提案
+        /// </summary>
         public const int ANOTHER_PARAM_PROPOSAL_AT_VOTING_STAGE = 302032;
-        /**
-         * 参数提案的的参数值错误
-         */
+        /// <summary>
+        /// 参数提案的的参数值错误
+        /// </summary>
         public const int GOVERN_PARAMETER_VALUE_ERROR = 302033;
-        /**
-         * 参数提案的值必须和旧值不同
-         */
+        /// <summary>
+        /// 参数提案的值必须和旧值不同
+        /// </summary>
         public const int PARAMETER_PROPOSAL_NEW_VALUE_SAME_AS_OLD_VALUE = 302034;
-        /**
-         * 双签证据校验失败
-         */
+        /// <summary>
+        /// 双签证据校验失败
+        /// </summary>
         public const int DUPLICATE_SIGNATURE_VERIFICATION_FAILED = 303000;
-        /**
-         * 已根据该证据执行过惩罚
-         */
+        /// <summary>
+        /// 已根据该证据执行过惩罚
+        /// </summary>
         public const int PUNISHMENT_HAS_BEEN_IMPLEMENTED = 303001;
-        /**
-         * 举报的双签块高比当前区块高
-         */
+        /// <summary>
+        /// 举报的双签块高比当前区块高
+        /// </summary>
         public const int BLOCKNUMBER_TOO_HIGH = 303002;
-        /**
-         * 举报的证据超过有效期
-         */
+        /// <summary>
+        /// 举报的证据超过有效期
+        /// </summary>
         public const int EVIDENCE_INTERVAL_TOO_LONG = 303003;
-        /**
-         * 获取举报的验证人信息失败
-         */
+        /// <summary>
+        /// 获取举报的验证人信息失败
+        /// </summary>
         public const int GET_CERTIFIER_INFOMATION_FAILED = 303004;
-        /**
-         * 证据的地址和验证人的地址不匹配
-         */
+        /// <summary>
+        /// 证据的地址和验证人的地址不匹配
+        /// </summary>
         public const int ADDRESS_NOT_MATCH = 303005;
-        /**
-         * 证据的节点ID和验证人的节点ID不匹配
-         */
+        /// <summary>
+        /// 证据的节点ID和验证人的节点ID不匹配
+        /// </summary>
         public const int NODEID_NOT_MATCH = 303006;
-        /**
-         * 证据的blsPubKey和验证人的blsPubKey不匹配
-         */
+        /// <summary>
+        /// 证据的blsPubKey和验证人的blsPubKey不匹配
+        /// </summary>
         public const int BLS_PUBKEY_NOT_MATCH = 303007;
-        /**
-         * 惩罚节点失败
-         */
+        /// <summary>
+        /// 惩罚节点失败
+        /// </summary>
         public const int SLASH_NODE_FAILED = 303008;
-        /**
-         * 创建锁仓计划数不能为0或者大于36
-         */
+        /// <summary>
+        /// 创建锁仓计划数不能为0或者大于36
+        /// </summary>
         public const int PARAM_EPOCH_CANNOT_BE_ZERO = 304001;
-        /**
-         * 创建锁仓计划数不能为0或者大于36
-         */
+        /// <summary>
+        /// 创建锁仓计划数不能为0或者大于36
+        /// </summary>
         public const int RESTRICTING_PLAN_NUMBER_CANNOT_BE_0_OR_MORE_THAN_36 = 304002;
-        /**
-         * 锁仓创建总金额不能小于1E18
-         */
+        /// <summary>
+        /// 锁仓创建总金额不能小于1E18
+        /// </summary>
         public const int TOTAL_RESTRICTING_AMOUNT_SHOULD_MORE_THAN_ONE = 304003;
-        /**
-         * 账户余额不够支付锁仓
-         */
+        /// <summary>
+        /// 账户余额不够支付锁仓
+        /// </summary>
         public const int BALANCE_NOT_ENOUGH_FOR_RESTRICT = 304004;
-        /**
-         * 没有在锁仓合约中找到该账户
-         */
+        /// <summary>
+        /// 没有在锁仓合约中找到该账户
+        /// </summary>
         public const int RESTRICTING_CONTRACT_AMOUNT_NOT_FOUND = 304005;
-        /**
-         * 惩罚金额大于质押金额
-         */
+        /// <summary>
+        /// 惩罚金额大于质押金额
+        /// </summary>
         public const int SLASH_AMOUNT_LARGER_THAN_STAKING_AMOUNT = 304006;
-        /**
-         * 惩罚锁仓账户的质押金额不能为0
-         */
+        /// <summary>
+        /// 惩罚锁仓账户的质押金额不能为0
+        /// </summary>
         public const int STAKING_AMOUNT_ZERO = 304007;
-        /**
-         * 锁仓转质押后回退的金额不能小于0
-         */
+        /// <summary>
+        /// 锁仓转质押后回退的金额不能小于0
+        /// </summary>
         public const int AMOUNT_CANNOT_LESS_THAN_ZERO = 304008;
-        /**
-         * 锁仓信息中的质押金额小于回退的金额
-         */
+        /// <summary>
+        /// 锁仓信息中的质押金额小于回退的金额
+        /// </summary>
         public const int WRONG_STAKING_RETURN_AMOUNT = 304009;
-
+        /// <summary>
+        /// 由ErrorCode返回错误详情
+        /// </summary>
+        /// <param name="errorCode">ErrorCode</param>
+        /// <returns>错误详情</returns>
         public static string GetErrorMsg(int errorCode)
         {
             switch (errorCode)

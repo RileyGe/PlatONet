@@ -5,49 +5,49 @@ namespace PlatONet
 {
     public class Delegation
     {
-        /**
-         * 委托人的账户地址
-         */
+        /// <summary>
+        /// 委托人的账户地址
+        /// </summary>
         [JsonProperty("Addr")]
         public string DelegateAddress { get; set; }
-        /**
-         * 验证人的节点Id
-         */
+        /// <summary>
+        /// 验证人的节点Id
+        /// </summary>
         [JsonProperty("NodeId")]
         public string NodeId { get; set; }
-        /**
-         * 发起质押时的区块高度
-         */
+        /// <summary>
+        /// 发起质押时的区块高度
+        /// </summary>
         [JsonProperty("StakingBlockNum")]
         public HexBigInteger StakingBlockNum { get; set; }
-        /**
-         * 最近一次对该候选人发起的委托时的结算周期
-         */
+        /// <summary>
+        /// 最近一次对该候选人发起的委托时的结算周期
+        /// </summary>
         [JsonProperty("DelegateEpoch")]
         public HexBigInteger DelegateEpoch { get; set; }
-        /**
-         * 发起委托账户的自由金额的锁定期委托的von
-         */
+        /// <summary>
+        /// 发起委托账户的自由金额的锁定期委托的von
+        /// </summary>
         [JsonProperty("Released")]
         public HexBigInteger DelegateReleased { get; set; }
-        /**
-         * 发起委托账户的自由金额的犹豫期委托的von
-         */
+        /// <summary>
+        /// 发起委托账户的自由金额的犹豫期委托的von
+        /// </summary>
         [JsonProperty("ReleasedHes")]
         public HexBigInteger DelegateReleasedHes { get; set; }
-        /**
-         * 发起委托账户的锁仓金额的锁定期委托的von
-         */
+        /// <summary>
+        /// 发起委托账户的锁仓金额的锁定期委托的von
+        ///  </summary>
         [JsonProperty("RestrictingPlan")]
         public HexBigInteger DelegateLocked { get; set; }
-        /**
-         * 发起委托账户的锁仓金额的犹豫期委托的von
-         */
+        /// <summary>
+        /// 发起委托账户的锁仓金额的犹豫期委托的von
+        /// </summary>
         [JsonProperty("RestrictingPlanHes")]
         public HexBigInteger DelegateLockedHes { get; set; }
-        /**
-         * 待领取的委托收益von
-         */
+        /// <summary>
+        /// 待领取的委托收益von
+        /// </summary>
         [JsonProperty("CumulativeIncome")]
         public HexBigInteger CumulativeIncome { get; set; }
         public override string ToString()

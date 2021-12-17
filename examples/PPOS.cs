@@ -37,8 +37,10 @@ namespace examples
             //};
             //var rewardList = ppos.GetDelegateReward("lat1d4vw2qxjg5ldyaqceel3s6ykpljav6hcn0jfmh", nodeList);
             //Console.WriteLine(rewardList);
-            var nodeList = ppos.GetVerifierList();
-            Console.WriteLine(nodeList);
+            //var nodeList = ppos.GetVerifierList();
+            //Console.WriteLine(nodeList);
+            var value = ppos.GetGovernParamValue("staking", "stakeThreshold");
+            Console.WriteLine(value);
         }
     }
 }
