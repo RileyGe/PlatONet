@@ -6,17 +6,15 @@ namespace PlatONet
 {
     public class ProgramVersion
 	{
-		/**
-		 * 代码版本
-		 */
+		/// <summary>
+		/// 代码版本
+		/// </summary>
 		[JsonProperty("Version")]
-
 		public HexBigInteger Version { get; set; }
-		/**
-		 * 代码版本签名
-		 */
+		/// <summary>
+		/// 代码版本签名
+		/// </summary>
 		[JsonProperty("Sign")]
-
 		public string Sign { get; set; }
 		public override int GetHashCode()
 		{

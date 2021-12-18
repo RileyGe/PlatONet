@@ -606,6 +606,16 @@ namespace PlatONet
         /// <returns>交易的Hash</returns>
         public string WithdrawDelegateReward(Transaction netParams = null)
         {
+            var result = WithdrawDelegateRewardAsync(netParams);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 提取账户当前所有的可提取的委托奖励--异步操作
+        /// </summary>
+        /// <returns>交易的Hash</returns>
+        public async Task<string> WithdrawDelegateRewardAsync(Transaction netParams = null)
+        {
             var funcType = PPOSFunctionType.WITHDRAW_DELEGATE_REWARD_FUNC_TYPE;
             List<byte[]> bufArray = new List<byte[]>
             {
@@ -613,11 +623,33 @@ namespace PlatONet
             };
             //netParams = netParams ?? new Transaction();
             netParams = BuildTransaction(bufArray, FunctionTypeToAddress(funcType), netParams);
-            netParams = _platon.FillTransactionWithDefaultValue(netParams);
+            netParams = await _platon.FillTransactionWithDefaultValueAsync(netParams);
             netParams.ChainId = _platon.ChainId;
-            return _platon.SendTransaction(netParams);
+            return await _platon.SendTransactionAsync(netParams);
         }
-        public CallResponse<List<RewardInfo>> GetDelegateReward(string address, List<string> nodeList = null, BlockParameter block = null)
+        /// <summary>
+        /// 查询当前账号可提取奖励明细
+        /// </summary>
+        /// <param name="address">委托人的账户地址</param>
+        /// <param name="nodeList">节点列表，如果为空查全部</param>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>当前账号可提取奖励明细，更多细节请参照<see cref="RewardInfo"/>。</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public List<RewardInfo> GetDelegateReward(string address, List<string> nodeList = null, BlockParameter block = null)
+        {
+            var result = GetDelegateRewardAsync(address, nodeList, block);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 查询当前账号可提取奖励明细--异步操作
+        /// </summary>
+        /// <param name="address">委托人的账户地址</param>
+        /// <param name="nodeList">节点列表，如果为空查全部</param>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>当前账号可提取奖励明细，更多细节请参照<see cref="RewardInfo"/>。</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public async Task<List<RewardInfo>> GetDelegateRewardAsync(string address, List<string> nodeList = null, BlockParameter block = null)
         {
             var funcType = PPOSFunctionType.GET_DELEGATE_REWARD_FUNC_TYPE;
             nodeList = nodeList ?? new List<string>();
@@ -632,48 +664,234 @@ namespace PlatONet
                 EncodeArray(nodeListBuf)
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
-            var hexStr = _platon.Call<string>(tx, block);
-            return DecodeResponse<CallResponse<List<RewardInfo>>>(hexStr);
+            var hexStr = await _platon.CallAsync<string>(tx, block);
+            var response = DecodeResponse<CallResponse<List<RewardInfo>>>(hexStr);
+            if (response != null && response.Code == ErrorCode.SUCCESS)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw new PlatONException(response.Code);
+            }
         }
         #endregion
-        #region node
-        public CallResponse<List<Node>> GetVerifierList(BlockParameter block = null)
+        #region node PlatON经济模型中委托人相关的合约接口
+        /// <summary>
+        /// 查询当前结算周期的验证人队列
+        /// </summary>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>当前结算周期的验证人队列，验证人信息请参照<see cref="Node"/>。</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public List<Node> GetVerifierList(BlockParameter block = null)
+        {
+            var result = GetVerifierListAsync(block);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 查询当前结算周期的验证人队列--异步操作
+        /// </summary>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>当前结算周期的验证人队列，验证人信息请参照<see cref="Node"/>。</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public async Task<List<Node>> GetVerifierListAsync(BlockParameter block = null)
         {
             var funcType = PPOSFunctionType.GET_VERIFIERLIST_FUNC_TYPE;
             List<byte[]> bufArray = new List<byte[]> {
                 EncodeElement(funcType.ToBytesForRLPEncoding())
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
-            var hexStr = _platon.Call<string>(tx, block);
-            return DecodeResponse<CallResponse<List<Node>>>(hexStr);
+            var hexStr = await _platon.CallAsync<string>(tx, block);
+            var response = DecodeResponse<CallResponse<List<Node>>>(hexStr);
+            if (response != null && response.Code == ErrorCode.SUCCESS)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw new PlatONException(response.Code);
+            }
         }
-        public CallResponse<List<Node>> GetValidatorList(BlockParameter block = null)
+        /// <summary>
+        /// 查询当前共识周期的验证人列表
+        /// </summary>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>当前共识周期的验证人列表，验证人信息请参照<see cref="Node"/>。</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public List<Node> GetValidatorList(BlockParameter block = null)
+        {
+            var result = GetVerifierListAsync(block);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 查询当前共识周期的验证人列表--异步操作
+        /// </summary>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>当前共识周期的验证人列表，验证人信息请参照<see cref="Node"/>。</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public async Task<List<Node>> GetValidatorListAsync(BlockParameter block = null)
         {
             var funcType = PPOSFunctionType.GET_VALIDATORLIST_FUNC_TYPE;
             List<byte[]> bufArray = new List<byte[]> {
                 EncodeElement(funcType.ToBytesForRLPEncoding())
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
-            var hexStr = _platon.Call<string>(tx, block);
-            return DecodeResponse<CallResponse<List<Node>>>(hexStr);
+            var hexStr = await _platon.CallAsync<string>(tx, block);
+            var response = DecodeResponse<CallResponse<List<Node>>>(hexStr);
+            if (response != null && response.Code == ErrorCode.SUCCESS)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw new PlatONException(response.Code);
+            }
         }
-        public CallResponse<List<Node>> GetCandidateList(BlockParameter block = null)
+        /// <summary>
+        /// 查询所有实时的候选人列表
+        /// </summary>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>所有实时的候选人列表，验证人信息请参照<see cref="Node"/>。</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public List<Node> GetCandidateList(BlockParameter block = null)
+        {
+            var result = GetCandidateListAsync(block);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 查询所有实时的候选人列表--异步操作
+        /// </summary>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>所有实时的候选人列表，验证人信息请参照<see cref="Node"/>。</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public async Task<List<Node>> GetCandidateListAsync(BlockParameter block = null)
         {
             var funcType = PPOSFunctionType.GET_VALIDATORLIST_FUNC_TYPE;
             List<byte[]> bufArray = new List<byte[]> {
                 EncodeElement(funcType.ToBytesForRLPEncoding())
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
-            var hexStr = _platon.Call<string>(tx, block);
-            return DecodeResponse<CallResponse<List<Node>>>(hexStr);
+            var hexStr = await _platon.CallAsync<string>(tx, block);
+            var response = DecodeResponse<CallResponse<List<Node>>>(hexStr);
+            if (response != null && response.Code == ErrorCode.SUCCESS)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw new PlatONException(response.Code);
+            }
         }
         #endregion
-        #region DAO
-        public void SubmitProposal()
+        #region DAO PlatON治理相关的合约接口
+        /// <summary>
+        /// 提交提案<br/>
+        /// 提案对象生成可使用快捷方法：<see cref="Proposal.CreateSubmitTextProposalParam(string, string)"/>生成文本提案、
+        /// <see cref="Proposal.CreateSubmitVersionProposalParam(string, string, HexBigInteger, HexBigInteger)"/>生成升级提案、
+        /// <see cref="Proposal.CreateSubmitParamProposalParam(string, string, string, string, string)"/>生成参数提案、
+        /// <see cref="Proposal.CreateSubmitCancelProposalParam(string, string, HexBigInteger, string)"/>生成取消提案。
+        /// </summary>
+        /// <param name="proposal">提案对象，详细情况请参照<see cref="Proposal"/></param>
+        /// <param name="netParams">传入网络的默认参数，可以包含Gas,GasPrice,Nonce等，不传入则使用网络默认参数。</param>
+        /// <returns>交易的Hash</returns>
+        public string SubmitProposal(Proposal proposal, Transaction netParams = null)
         {
-
+            var result = SubmitProposalAsync(proposal, netParams);
+            result.Wait();
+            return result.Result;
         }
-        public CallResponse<Proposal> GetProposal(string proposalId,BlockParameter block = null)
+        /// <summary>
+        /// 提交提案--异步操作<br/>
+        /// 提案对象生成可使用快捷方法：<see cref="Proposal.CreateSubmitTextProposalParam(string, string)"/>生成文本提案、
+        /// <see cref="Proposal.CreateSubmitVersionProposalParam(string, string, HexBigInteger, HexBigInteger)"/>生成升级提案、
+        /// <see cref="Proposal.CreateSubmitParamProposalParam(string, string, string, string, string)"/>生成参数提案、
+        /// <see cref="Proposal.CreateSubmitCancelProposalParam(string, string, HexBigInteger, string)"/>生成取消提案。
+        /// </summary>
+        /// <param name="proposal">提案对象，详细情况请参照<see cref="Proposal"/></param>
+        /// <param name="netParams">传入网络的默认参数，可以包含Gas,GasPrice,Nonce等，不传入则使用网络默认参数。</param>
+        /// <returns>交易的Hash</returns>
+        public async Task<string> SubmitProposalAsync(Proposal proposal, Transaction netParams = null)
+        {
+            List<byte[]> bufArray = new List<byte[]>
+            {
+                EncodeElement(proposal.SubmitFunctionType.ToBytesForRLPEncoding())
+            };
+            foreach (var item in proposal.SubmitInputParameters)
+                bufArray.Add(EncodeElement(item));
+            //netParams = netParams ?? new Transaction();
+            netParams = BuildTransaction(bufArray, FunctionTypeToAddress(proposal.SubmitFunctionType), netParams);
+            netParams = await _platon.FillTransactionWithDefaultValueAsync(netParams);
+            netParams.ChainId = _platon.ChainId;
+            return await _platon.SendTransactionAsync(netParams);
+        }
+        /// <summary>
+        /// 给提案投票
+        /// </summary>
+        /// <param name="programVersion">程序的真实版本，可通过<see cref="Web3.GetProgramVersion"/>获取</param>
+        /// <param name="voteOption">投票类型，详情请参照<see cref="VoteOption"/></param>
+        /// <param name="proposalID">提案ID</param>
+        /// <param name="verifier">声明的节点，只能是验证人/候选人</param>
+        /// <param name="netParams">传入网络的默认参数，可以包含Gas,GasPrice,Nonce等，不传入则使用网络默认参数。</param>
+        /// <returns>交易的Hash</returns>
+        public string Vote(ProgramVersion programVersion, VoteOption voteOption,
+            string proposalID, string verifier, Transaction netParams = null)
+        {
+            var result = VoteAsync(programVersion, voteOption, proposalID, verifier, netParams);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 给提案投票--异步操作
+        /// </summary>
+        /// <param name="programVersion">程序的真实版本，可通过<see cref="Web3.GetProgramVersion"/>获取</param>
+        /// <param name="voteOption">投票类型，详情请参照<see cref="VoteOption"/></param>
+        /// <param name="proposalID">提案ID</param>
+        /// <param name="verifier">声明的节点，只能是验证人/候选人</param>
+        /// <param name="netParams">传入网络的默认参数，可以包含Gas,GasPrice,Nonce等，不传入则使用网络默认参数。</param>
+        /// <returns>交易的Hash</returns>
+        public async Task<string> VoteAsync(ProgramVersion programVersion, VoteOption voteOption,
+            string proposalID, string verifier, Transaction netParams = null)
+        {
+            var funcType = PPOSFunctionType.VOTE_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]>
+            {
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement(verifier.HexToByteArray()),                
+                EncodeElement(proposalID.HexToByteArray()),
+                EncodeElement(((int)voteOption).ToBytesForRLPEncoding()),
+                EncodeElement(programVersion.Version.ToHexByteArray()),
+                EncodeElement(programVersion.Sign.HexToByteArray())
+            };
+            //netParams = netParams ?? new Transaction();
+            netParams = BuildTransaction(bufArray, FunctionTypeToAddress(funcType), netParams);
+            netParams = await _platon.FillTransactionWithDefaultValueAsync(netParams);
+            netParams.ChainId = _platon.ChainId;
+            return await _platon.SendTransactionAsync(netParams);
+        }
+        /// <summary>
+        /// 查询提案
+        /// </summary>
+        /// <param name="proposalId">提案id</param>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>单个提案信息的对象，更多信息请参照<see cref="Proposal"/>。</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public Proposal GetProposal(string proposalId, BlockParameter block = null)
+        {
+            var result = GetProposalAsync(proposalId, block);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 查询提案--异步操作
+        /// </summary>
+        /// <param name="proposalId">提案id</param>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>单个提案信息的对象，更多信息请参照<see cref="Proposal"/>。</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public async Task<Proposal> GetProposalAsync(string proposalId,BlockParameter block = null)
         {
             var funcType = PPOSFunctionType.GET_PROPOSAL_FUNC_TYPE;
             List<byte[]> bufArray = new List<byte[]> {
@@ -681,10 +899,38 @@ namespace PlatONet
                 EncodeElement(proposalId.HexToByteArray())
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
-            var hexStr = _platon.Call<string>(tx, block);
-            return DecodeResponse<CallResponse<Proposal>>(hexStr);
+            var hexStr = await _platon.CallAsync<string>(tx, block);
+            var response = DecodeResponse<CallResponse<Proposal>>(hexStr);
+            if (response != null && response.Code == ErrorCode.SUCCESS)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw new PlatONException(response.Code);
+            }
         }
-        public CallResponse<TallyResult> GetTallyResult(string proposalId, BlockParameter block = null)
+        /// <summary>
+        /// 查询提案结果
+        /// </summary>
+        /// <param name="proposalId">提案ID</param>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>提案结果，详情请参照<see cref="TallyResult"/></returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public TallyResult GetTallyResult(string proposalId, BlockParameter block = null)
+        {
+            var result = GetTallyResultAsync(proposalId, block);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 查询提案结果--异步操作
+        /// </summary>
+        /// <param name="proposalId">提案ID</param>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>提案结果，详情请参照<see cref="TallyResult"/></returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public async Task<TallyResult> GetTallyResultAsync(string proposalId, BlockParameter block = null)
         {
             var funcType = PPOSFunctionType.GET_TALLY_RESULT_FUNC_TYPE;
             List<byte[]> bufArray = new List<byte[]> {
@@ -692,29 +938,108 @@ namespace PlatONet
                 EncodeElement(proposalId.HexToByteArray())
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
-            var hexStr = _platon.Call<string>(tx, block);
-            return DecodeResponse<CallResponse<TallyResult>>(hexStr);
+            var hexStr = await _platon.CallAsync<string>(tx, block);
+            var response = DecodeResponse<CallResponse<TallyResult>>(hexStr);
+            if (response != null && response.Code == ErrorCode.SUCCESS)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw new PlatONException(response.Code);
+            }
         }
-        public CallResponse<List<Proposal>> GetProposalList(BlockParameter block = null)
+        /// <summary>
+        /// 查询提案列表
+        /// </summary>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>提案列表，提案内容请参照<see cref="Proposal"/></returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public List<Proposal> GetProposalList(BlockParameter block = null)
+        {
+            var result = GetProposalListAsync(block);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 查询提案列表
+        /// </summary>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>提案列表，提案内容请参照<see cref="Proposal"/></returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public async Task<List<Proposal>> GetProposalListAsync(BlockParameter block = null)
         {
             var funcType = PPOSFunctionType.GET_PROPOSAL_LIST_FUNC_TYPE;
             List<byte[]> bufArray = new List<byte[]> {
                 EncodeElement(funcType.ToBytesForRLPEncoding())
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
-            var hexStr = _platon.Call<string>(tx, block);
-            return DecodeResponse<CallResponse<List<Proposal>>>(hexStr);
-        }
-        public void DeclareVersion()
-        {
-
+            var hexStr = await _platon.CallAsync<string>(tx, block);
+            var response = DecodeResponse<CallResponse<List<Proposal>>>(hexStr);
+            if (response != null && response.Code == ErrorCode.SUCCESS)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw new PlatONException(response.Code);
+            }
         }
         /// <summary>
-        /// 
+        /// 版本声明
         /// </summary>
-        /// <param name="block"></param>
-        /// <returns></returns>
-        public CallResponse<HexBigInteger> GetActiveVersion(BlockParameter block = null)
+        /// <param name="programVersion">程序的真实版本，可通过<see cref="Web3.GetProgramVersion"/>获取</param>
+        /// <param name="verifier">声明的节点，只能是验证人/候选人</param>
+        /// <param name="netParams">传入网络的默认参数，可以包含Gas,GasPrice,Nonce等，不传入则使用网络默认参数。</param>
+        /// <returns>交易的Hash</returns>
+        public string DeclareVersion(ProgramVersion programVersion, string verifier, Transaction netParams = null)
+        {
+            var result = DeclareVersionAsync(programVersion, verifier, netParams);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 版本声明--异步操作
+        /// </summary>
+        /// <param name="programVersion">程序的真实版本，可通过<see cref="Web3.GetProgramVersion"/>获取</param>
+        /// <param name="verifier">声明的节点，只能是验证人/候选人</param>
+        /// <param name="netParams">传入网络的默认参数，可以包含Gas,GasPrice,Nonce等，不传入则使用网络默认参数。</param>
+        /// <returns>交易的Hash</returns>
+        public async Task<string> DeclareVersionAsync(ProgramVersion programVersion, string verifier, Transaction netParams = null)
+        {
+            var funcType = PPOSFunctionType.DECLARE_VERSION_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]>
+            {
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement(verifier.HexToByteArray()),
+                EncodeElement(programVersion.Version.ToHexByteArray()),
+                EncodeElement(programVersion.Sign.HexToByteArray())
+            };
+            //netParams = netParams ?? new Transaction();
+            netParams = BuildTransaction(bufArray, FunctionTypeToAddress(funcType), netParams);
+            netParams = await _platon.FillTransactionWithDefaultValueAsync(netParams);
+            netParams.ChainId = _platon.ChainId;
+            return await _platon.SendTransactionAsync(netParams);
+        }
+        /// <summary>
+        /// 查询节点的链生效版本
+        /// </summary>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>节点的链生效版本</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public HexBigInteger GetActiveVersion(BlockParameter block = null)
+        {
+            var result = GetActiveVersionAsync(block);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 查询节点的链生效版本--异步操作
+        /// </summary>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>节点的链生效版本</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public async Task<HexBigInteger> GetActiveVersionAsync(BlockParameter block = null)
         {
             var funcType = PPOSFunctionType.GET_ACTIVE_VERSION;
             List<byte[]> bufArray = new List<byte[]>
@@ -722,9 +1047,183 @@ namespace PlatONet
                 EncodeElement(funcType.ToBytesForRLPEncoding())
             };
             var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
-            var hexStr = _platon.Call<string>(tx, block);
-            return DecodeResponse<CallResponse<HexBigInteger>>(hexStr);
+            var hexStr = await _platon.CallAsync<string>(tx, block);
+            var response = DecodeResponse<CallResponse<HexBigInteger>>(hexStr);
+            if (response != null && response.Code == ErrorCode.SUCCESS)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw new PlatONException(response.Code);
+            }
         }
+        #endregion
+        #region double sign PlatON举报惩罚相关的合约接口
+        /// <summary>
+        /// 举报双签
+        /// </summary>
+        /// <param name="duplicateSignType">代表双签类型：PREPARE_BLOCK，PREPARE_VOTE，VIEW_CHANGE</param>
+        /// <param name="data">单个证据的json值</param>
+        /// <param name="netParams">传入网络的默认参数，可以包含Gas,GasPrice,Nonce等，不传入则使用网络默认参数。</param>
+        /// <returns>交易的Hash</returns>
+        public string ReportDoubleSign(DuplicateSignType duplicateSignType, string data, Transaction netParams = null)
+        {
+            var result = ReportDoubleSignAsync(duplicateSignType, data, netParams);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 举报双签--异步操作
+        /// </summary>
+        /// <param name="duplicateSignType">代表双签类型：PREPARE_BLOCK，PREPARE_VOTE，VIEW_CHANGE</param>
+        /// <param name="data">单个证据的json值</param>
+        /// <param name="netParams">传入网络的默认参数，可以包含Gas,GasPrice,Nonce等，不传入则使用网络默认参数。</param>
+        /// <returns>交易的Hash</returns>
+        public async Task<string> ReportDoubleSignAsync(DuplicateSignType duplicateSignType, string data, Transaction netParams = null)
+        {
+            var funcType = PPOSFunctionType.REPORT_DOUBLESIGN_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]>
+            {
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement(((int)duplicateSignType).ToBytesForRLPEncoding()),
+                EncodeElement(data.ToBytesForRLPEncoding())
+            };
+            //netParams = netParams ?? new Transaction();
+            netParams = BuildTransaction(bufArray, FunctionTypeToAddress(funcType), netParams);
+            netParams = await _platon.FillTransactionWithDefaultValueAsync(netParams);
+            netParams.ChainId = _platon.ChainId;
+            return await _platon.SendTransactionAsync(netParams);
+        }
+        /// <summary>
+        /// 查询节点是否已被举报过多签
+        /// </summary>
+        /// <param name="doubleSignType">双签类型：prepareBlock，EprepareVote，viewChange</param>
+        /// <param name="nodeId">举报的节点地址</param>
+        /// <param name="blockNumber">多签的块高</param>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>data Y, 可能为零交易Hash，即: 0x000...000</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public string CheckDoubleSign(DuplicateSignType doubleSignType, string nodeId, HexBigInteger blockNumber, BlockParameter block = null)
+        {
+            var result = CheckDoubleSignAsync(doubleSignType, nodeId, blockNumber, block);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 查询节点是否已被举报过多签--异步操作
+        /// </summary>
+        /// <param name="doubleSignType">双签类型：prepareBlock，EprepareVote，viewChange</param>
+        /// <param name="nodeId">举报的节点地址</param>
+        /// <param name="blockNumber">多签的块高</param>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>data Y, 可能为零交易Hash，即: 0x000...000</returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public async Task<string> CheckDoubleSignAsync(DuplicateSignType doubleSignType, string nodeId, HexBigInteger blockNumber, BlockParameter block = null)
+        {
+            var funcType = PPOSFunctionType.CHECK_DOUBLESIGN_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]>
+            {
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement(((int)doubleSignType).ToBytesForRLPEncoding()),
+                EncodeElement(nodeId.HexToByteArray()),
+                EncodeElement(blockNumber.ToHexByteArray())
+            };
+            var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
+            var hexStr = await _platon.CallAsync<string>(tx, block);
+            var response = DecodeResponse<CallResponse<string>>(hexStr);
+            if (response != null && response.Code == ErrorCode.SUCCESS)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw new PlatONException(response.Code);
+            }
+        }
+        #endregion
+        #region restricting plan PlatON锁仓相关接口
+        /// <summary>
+        /// 创建锁仓计划
+        /// </summary>
+        /// <param name="address">锁仓释放到账账户</param>
+        /// <param name="plans">锁仓计划列表（数组），详情见<see cref="RestrictingPlan"/></param>
+        /// <param name="netParams">传入网络的默认参数，可以包含Gas,GasPrice,Nonce等，不传入则使用网络默认参数。</param>
+        /// <returns>交易的Hash</returns>
+        public string CreateRestrictingPlan(string address, List<RestrictingPlan> plans, Transaction netParams = null)
+        {
+            var result = CreateRestrictingPlanAsync(address, plans, netParams);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 创建锁仓计划--异步操作
+        /// </summary>
+        /// <param name="address">锁仓释放到账账户</param>
+        /// <param name="plans">锁仓计划列表（数组），详情见<see cref="RestrictingPlan"/></param>
+        /// <param name="netParams">传入网络的默认参数，可以包含Gas,GasPrice,Nonce等，不传入则使用网络默认参数。</param>
+        /// <returns>交易的Hash</returns>
+        public async Task<string> CreateRestrictingPlanAsync(string address, List<RestrictingPlan> plans, Transaction netParams = null)
+        {
+            var funcType = PPOSFunctionType.CREATE_RESTRICTINGPLAN_FUNC_TYPE;
+            var plansBytesList = new List<byte[]>();
+            foreach(var plan in plans)
+            {
+                plansBytesList.Add(EncodeArray(plan.BytesListForRLPEncoding));
+            }
+            List<byte[]> bufArray = new List<byte[]>
+            {
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement((new Address(address)).Bytes),
+                EncodeArray(plansBytesList)
+            };
+            //netParams = netParams ?? new Transaction();
+            netParams = BuildTransaction(bufArray, FunctionTypeToAddress(funcType), netParams);
+            netParams = await _platon.FillTransactionWithDefaultValueAsync(netParams);
+            netParams.ChainId = _platon.ChainId;
+            return await _platon.SendTransactionAsync(netParams);
+        }
+        /// <summary>
+        /// 获取锁仓计划
+        /// </summary>
+        /// <param name="address">锁仓释放到账账户</param>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>账号的锁仓计划，详细请参照<see cref="RestrictingInfo"/></returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public RestrictingItem GetRestrictingInfo(string address, BlockParameter block = null)
+        {
+            var result = GetRestrictingInfoAsync(address, block);
+            result.Wait();
+            return result.Result;
+        }
+        /// <summary>
+        /// 获取锁仓计划--异步操作
+        /// </summary>
+        /// <param name="address">锁仓释放到账账户</param>
+        /// <param name="block"><see cref="BlockParameter"/>实例，表示块高</param>
+        /// <returns>账号的锁仓计划，详细请参照<see cref="RestrictingInfo"/></returns>
+        /// <exception cref="PlatONException">PlatON异常</exception>
+        public async Task<RestrictingItem> GetRestrictingInfoAsync(string address, BlockParameter block = null)
+        {
+            var funcType = PPOSFunctionType.GET_RESTRICTINGINFO_FUNC_TYPE;
+            List<byte[]> bufArray = new List<byte[]>
+            {
+                EncodeElement(funcType.ToBytesForRLPEncoding()),
+                EncodeElement((new Address(address).Bytes))
+            };
+            var tx = BuildTransaction(bufArray, FunctionTypeToAddress(funcType));
+            var hexStr = await _platon.CallAsync<string>(tx, block);
+            var response = DecodeResponse<CallResponse<RestrictingItem>>(hexStr);
+            if (response != null && response.Code == ErrorCode.SUCCESS)
+            {
+                return response.Data;
+            }
+            else
+            {
+                throw new PlatONException(response.Code);
+            }
+        }
+        #endregion
         /// <summary>
         /// 查询治理参数值
         /// </summary>
@@ -766,7 +1265,6 @@ namespace PlatONet
                 throw new PlatONException(response.Code);
             }
         }
-        #endregion
         private Transaction BuildTransaction(IEnumerable<byte[]> bufArray,
             string address, Transaction netParams = null)
         {
@@ -784,20 +1282,5 @@ namespace PlatONet
             var result = JsonConvert.DeserializeObject<T>(str);
             return result;
         }
-    }
-    public enum StakingAmountType
-    {
-        /// <summary>
-        /// 自由金额
-        /// </summary>
-        FREE_AMOUNT_TYPE = 0,
-        /// <summary>
-        /// 锁仓金额
-        /// </summary>
-        RESTRICTING_AMOUNT_TYPE = 1,
-        /// <summary>
-        /// 优先使用锁仓余额，锁仓余额不足则剩下的部分使用自由金额
-        /// </summary>
-        AUTO_AMOUNT_TYPE = 2
-    }
+    }    
 }
