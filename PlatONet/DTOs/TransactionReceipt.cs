@@ -3,42 +3,45 @@ using Nethereum.Util;
 using Newtonsoft.Json.Linq;
 using System.Runtime.Serialization;
 
-namespace PlatONet
+namespace PlatONet.DTOs
 {
+    /// <summary>
+    /// 交易收据
+    /// </summary>
     public class TransactionReceipt
     {
         /// <summary>
-        ///     DATA, 32 Bytes - hash of the transaction.
+        /// DATA, 32 Bytes - hash of the transaction.
         /// </summary>
         [DataMember(Name = "transactionHash")]
         public string TransactionHash { get; set; }
 
         /// <summary>
-        ///     QUANTITY - integer of the transactions index position in the block.
+        /// QUANTITY - integer of the transactions index position in the block.
         /// </summary>
         [DataMember(Name = "transactionIndex")]
         public HexBigInteger TransactionIndex { get; set; }
 
         /// <summary>
-        ///     DATA, 32 Bytes - hash of the block where this transaction was in.
+        /// DATA, 32 Bytes - hash of the block where this transaction was in.
         /// </summary>
         [DataMember(Name = "blockHash")]
         public string BlockHash { get; set; }
 
         /// <summary>
-        ///     QUANTITY - block number where this transaction was in.
+        /// QUANTITY - block number where this transaction was in.
         /// </summary>
         [DataMember(Name = "blockNumber")]
         public HexBigInteger BlockNumber { get; set; }
 
         /// <summary>
-        ///     QUANTITY - The total amount of gas used when this transaction was executed in the block.
+        /// QUANTITY - The total amount of gas used when this transaction was executed in the block.
         /// </summary>
         [DataMember(Name = "cumulativeGasUsed")]
         public HexBigInteger CumulativeGasUsed { get; set; }
 
         /// <summary>
-        ///     QUANTITY - The amount of gas used by this specific transaction alone.
+        /// QUANTITY - The amount of gas used by this specific transaction alone.
         /// </summary>
         [DataMember(Name = "gasUsed")]
         public HexBigInteger GasUsed { get; set; }
@@ -50,7 +53,7 @@ namespace PlatONet
         public HexBigInteger EffectiveGasPrice { get; set; }
 
         /// <summary>
-        ///     DATA, 20 Bytes - The contract address created, if the transaction was a contract creation, otherwise null.
+        /// DATA, 20 Bytes - The contract address created, if the transaction was a contract creation, otherwise null.
         /// </summary>
         [DataMember(Name = "contractAddress")]
         public string ContractAddress { get; set; }
@@ -58,7 +61,7 @@ namespace PlatONet
         [DataMember(Name = "root")]
         public string Root { get; set; }
         /// <summary>
-        ///     QUANTITY / BOOLEAN Transaction Success 1, Transaction Failed 0
+        /// QUANTITY / BOOLEAN Transaction Success 1, Transaction Failed 0
         /// </summary>
         [DataMember(Name = "status")]
         public HexBigInteger Status { get; set; }
@@ -70,19 +73,19 @@ namespace PlatONet
         public string To { get; set; }
 
         /// <summary>
-        ///     logs: Array - Array of log objects, which this transaction generated.
+        /// logs: Array - Array of log objects, which this transaction generated.
         /// </summary>
         [DataMember(Name = "logs")]
         public JArray Logs { get; set; }
 
         /// <summary>
-        ///    QUANTITY - The transaction type.
+        /// QUANTITY - The transaction type.
         /// </summary>
         [DataMember(Name = "type")]
         public HexBigInteger Type { get; set; }
 
         /// <summary>
-        ///     DATA, 256 Bytes - Bloom filter for light clients to quickly retrieve related logs
+        /// DATA, 256 Bytes - Bloom filter for light clients to quickly retrieve related logs
         /// </summary>
         [DataMember(Name = "logsBloom")]
         public string LogsBloom { get; set; }

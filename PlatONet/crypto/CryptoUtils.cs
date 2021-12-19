@@ -1,12 +1,10 @@
 ﻿using Org.BouncyCastle.Crypto.Digests;
-using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace PlatONet
+namespace PlatONet.Crypto
 {
-    public class CryptoUtils
+    internal class CryptoUtils
     {
         public static byte[] Keccak(byte[] msgBytes)
         {

@@ -1,7 +1,7 @@
 ﻿using Nethereum.Hex.HexTypes;
 using Newtonsoft.Json;
 
-namespace PlatONet
+namespace PlatONet.DTOs
 {
     /// <summary>
     /// 投票结果

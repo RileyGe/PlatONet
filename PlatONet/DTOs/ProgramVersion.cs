@@ -2,8 +2,11 @@
 using Nethereum.Hex.HexTypes;
 using Newtonsoft.Json;
 
-namespace PlatONet
+namespace PlatONet.DTOs
 {
+	/// <summary>
+	/// 程序版本
+	/// </summary>
     public class ProgramVersion
 	{
 		/// <summary>

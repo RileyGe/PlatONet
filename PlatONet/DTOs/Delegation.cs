@@ -1,8 +1,11 @@
 ﻿using Nethereum.Hex.HexTypes;
 using Newtonsoft.Json;
 
-namespace PlatONet
+namespace PlatONet.DTOs
 {
+    /// <summary>
+    /// 委托信息
+    /// </summary>
     public class Delegation
     {
         /// <summary>

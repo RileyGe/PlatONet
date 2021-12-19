@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PlatONet
+namespace PlatONet.DTOs
 {
     /// <summary>
     /// PlatONet异常
@@ -12,7 +12,7 @@ namespace PlatONet
         /// 使用ErrorCode初如化异常
         /// </summary>
         /// <param name="errorCode">ErrorCode</param>
-        public PlatONException(int errorCode) : base(PlatONet.ErrorCode.GetErrorMsg(errorCode))
+        public PlatONException(int errorCode) : base(DTOs.ErrorCode.GetErrorMsg(errorCode))
         {
             ErrorCode = errorCode;
         }

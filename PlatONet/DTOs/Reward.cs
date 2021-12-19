@@ -1,8 +1,11 @@
 ﻿using Nethereum.Hex.HexTypes;
 using Newtonsoft.Json;
 
-namespace PlatONet
+namespace PlatONet.DTOs
 {
+    /// <summary>
+    /// 奖励信息
+    /// </summary>
     public class RewardInfo
     {
         /// <summary>

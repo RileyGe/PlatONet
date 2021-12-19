@@ -1,8 +1,11 @@
 ﻿using Nethereum.Hex.HexTypes;
 using Newtonsoft.Json;
 
-namespace PlatONet
+namespace PlatONet.DTOs
 {
+    /// <summary>
+    /// 委托节点的ID和质押区块高度信息
+    /// </summary>
     public class DelegationIdInfo
     {
         /// <summary>

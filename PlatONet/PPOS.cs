@@ -7,6 +7,7 @@ using Nethereum.Hex.HexTypes;
 using Nethereum.RLP;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using PlatONet.DTOs;
 
 namespace PlatONet
 {

@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.RLP;
 
-namespace PlatONet
+namespace PlatONet.DTOs
 {
+    /// <summary>
+    /// 提案信息
+    /// </summary>
     public class Proposal
     {
         /// <summary>

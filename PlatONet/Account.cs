@@ -2,6 +2,7 @@
 using Nethereum.Signer;
 using System.Linq;
 using System.Text;
+using PlatONet.Crypto;
 
 namespace PlatONet
 {

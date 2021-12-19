@@ -1,8 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Nethereum.Hex.HexTypes;
 
-namespace PlatONet
+namespace PlatONet.DTOs
 {
+    /// <summary>
+    /// 节点信息
+    /// </summary>
     public class Node
     {
         /// <summary>
