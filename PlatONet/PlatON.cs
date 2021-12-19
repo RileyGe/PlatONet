@@ -441,20 +441,22 @@ namespace PlatONet
                 });
         }
         /// <summary>
-        /// 获取链ID，与<see cref="Web3.GetChainId"/>方法作用相同
+        /// 获取链ID，与<see cref="PlatON.GetChainId"/>方法作用相同
         /// </summary>
         /// <returns>链ID</returns>
-        public ulong GetChainId()
+        public HexBigInteger GetChainId()
         {
-            return Convert.ToUInt64(ExcuteCommand<string>(ApiMplatonods.platon_chainId.ToString()), 16);
+            var result = ExcuteCommand<string>(ApiMplatonods.platon_chainId.ToString());
+            return new HexBigInteger(result);
         }
         /// <summary>
-        /// 获取链ID，与<see cref="Web3.GetChainId"/>方法作用相同--异步操作
+        /// 获取链ID，与<see cref="PlatON.GetChainId"/>方法作用相同--异步操作
         /// </summary>
         /// <returns>链ID</returns>
-        public Task<string> GetChainIdAsync()
+        public async Task<HexBigInteger> GetChainIdAsync()
         {
-            return ExcuteCommandAsync<string>(ApiMplatonods.platon_chainId.ToString());
+            var result = await ExcuteCommandAsync<string>(ApiMplatonods.platon_chainId.ToString());
+            return new HexBigInteger(result);
         }
         /// <summary>
         /// 获取当前网络bench32格式地址前缀

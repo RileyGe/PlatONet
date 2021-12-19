@@ -58,7 +58,7 @@ namespace PlatONet
         /// </summary>
         public void InitChainIdAndHrp()
         {
-            PlatON.ChainId = PlatON.GetChainId().ToHexBigInteger();
+            PlatON.ChainId = PlatON.GetChainId();
             PlatON.Hrp = PlatON.GetAddressHrp();
         }
         /// <summary>
@@ -101,9 +101,9 @@ namespace PlatONet
         /// 返回当前客户端版本--异步操作
         /// </summary>
         /// <returns>当前客户端版本</returns>
-        public Task<string> ClientVersionAsync()
+        public async Task<string> ClientVersionAsync()
         {
-            return client.SendRequestAsync<string>("web3_clientVersion");
+            return await client.SendRequestAsync<string>("web3_clientVersion");
         }
         /// <summary>
         /// 返回给定数据的keccak-256（不是标准sha3-256）
@@ -121,9 +121,9 @@ namespace PlatONet
         /// </summary>
         /// <param name="data">加密前的数据</param>
         /// <returns>加密后的数据</returns>
-        public Task<string> Sha3Async(string data)
+        public async Task<string> Sha3Async(string data)
         {
-            return client.SendRequestAsync<string>("web3_sha3", null,
+            return await client.SendRequestAsync<string>("web3_sha3", null,
                 new object[] { data });
         }
         /// <summary>
@@ -140,9 +140,9 @@ namespace PlatONet
         /// 返回当前网络ID--异步操作
         /// </summary>
         /// <returns>当前网络ID</returns>
-        public Task<string> NetVersionAsync()
+        public async Task<string> NetVersionAsync()
         {
-            return client.SendRequestAsync<string>("net_version");            
+            return await client.SendRequestAsync<string>("net_version");            
         }
         /// <summary>
         /// 客户端是否正在积极侦听网络连接
@@ -158,9 +158,9 @@ namespace PlatONet
         /// 客户端是否正在积极侦听网络连接--异步操作
         /// </summary>
         /// <returns>客户端正在积极侦听网络连接，则返回true，否则返回false</returns>
-        public Task<bool> NetListeningAsync()
+        public async Task<bool> NetListeningAsync()
         {
-            return client.SendRequestAsync<bool>("net_listening");
+            return await client.SendRequestAsync<bool>("net_listening");
         }
         /// <summary>
         /// 返回当前连接到客户端的对等体的数量
@@ -170,15 +170,16 @@ namespace PlatONet
         {
             var result = NetPeerCountAsync();
             result.Wait();
-            return Convert.ToUInt64(result.Result, 16);
+            return result.Result;
         }
         /// <summary>
         /// 返回当前连接到客户端的对等体的数量--异步操作
         /// </summary>
         /// <returns>当前连接到客户端的对等体的数量，以16进制字符串的形式返回</returns>
-        public Task<string> NetPeerCountAsync()
+        public async Task<ulong> NetPeerCountAsync()
         {
-            return client.SendRequestAsync<string>("net_peerCount");
+            var result = await client.SendRequestAsync<string>("net_peerCount");
+            return Convert.ToUInt64(result, 16);
         }
         /// <summary>
         /// 获得一个<see cref="PlatONContract"/>的实例。<br/>
@@ -204,9 +205,9 @@ namespace PlatONet
         /// 获取代码版本--异步操作
         /// </summary>
         /// <returns>代码版本</returns>
-        public Task<ProgramVersion> GetProgramVersionAsync()
+        public async Task<ProgramVersion> GetProgramVersionAsync()
         {
-            return PlatON.ExcuteCommandAsync<ProgramVersion>("admin_getProgramVersion");
+            return await PlatON.ExcuteCommandAsync<ProgramVersion>("admin_getProgramVersion");
         }
         /// <summary>
         /// 获取bls的证明
@@ -220,9 +221,9 @@ namespace PlatONet
         /// 获取bls的证明--异步操作
         /// </summary>
         /// <returns>bls的证明</returns>
-        public Task<string> GetSchnorrNIZKProveAsync()
+        public async Task<string> GetSchnorrNIZKProveAsync()
         {
-            return PlatON.ExcuteCommandAsync<string>("admin_getSchnorrNIZKProve");
+            return await PlatON.ExcuteCommandAsync<string>("admin_getSchnorrNIZKProve");
         }
         /// <summary>
         /// 获取PlatON参数配置
@@ -237,25 +238,28 @@ namespace PlatONet
         /// 获取PlatON参数配置--异步操作
         /// </summary>
         /// <returns>PlatON参数配置</returns>
-        public Task<string> GetEconomicConfigAsync()
+        public async Task<EconomicConfig> GetEconomicConfigAsync()
         {
-            return PlatON.ExcuteCommandAsync<string>("debug_economicConfig");
+            var result = await PlatON.ExcuteCommandAsync<string>("debug_economicConfig");
+            return JsonConvert.DeserializeObject<EconomicConfig>(result);
         }
         /// <summary>
         /// 获取链ID，与<see cref="PlatON.GetChainId"/>方法作用相同
         /// </summary>
         /// <returns>链ID</returns>
-        public ulong GetChainId()
+        public HexBigInteger GetChainId()
         {
-            return Convert.ToUInt64(PlatON.ExcuteCommand<string>(ApiMplatonods.platon_chainId.ToString()), 16);
+            var result = PlatON.ExcuteCommand<string>(ApiMplatonods.platon_chainId.ToString());
+            return new HexBigInteger(result);
         }
         /// <summary>
         /// 获取链ID，与<see cref="PlatON.GetChainId"/>方法作用相同--异步操作
         /// </summary>
         /// <returns>链ID</returns>
-        public Task<string> GetChainIdAsync()
+        public async Task<HexBigInteger> GetChainIdAsync()
         {
-            return PlatON.ExcuteCommandAsync<string>(ApiMplatonods.platon_chainId.ToString());
+            var result = await PlatON.ExcuteCommandAsync<string>(ApiMplatonods.platon_chainId.ToString());
+            return new HexBigInteger(result);
         }
         /// <summary>
         /// 获取零出块的节点，因为零出块而被观察的节点列表
@@ -270,9 +274,10 @@ namespace PlatONet
         /// 获取零出块的节点，因为零出块而被观察的节点列表--异步操作
         /// </summary>
         /// <returns>零出块的节点列表</returns>
-        public Task<string> GetWaitSlashingNodeListAsync()
+        public async Task<List<WaitSlashingNode>> GetWaitSlashingNodeListAsync()
         {
-            return PlatON.ExcuteCommandAsync<string>("debug_getWaitSlashingNodeList");
+            var result = await PlatON.ExcuteCommandAsync<string>("debug_getWaitSlashingNodeList");
+            return JsonConvert.DeserializeObject<List<WaitSlashingNode>>(result);
         }
         ///// <summary>
         ///// String :  : 数据库名称

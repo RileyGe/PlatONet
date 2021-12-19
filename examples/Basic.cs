@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using PlatONet;
-using Nethereum.RLP;
 
 namespace examples
 {
@@ -11,8 +8,10 @@ namespace examples
         public static void Main(string[] args)
         {
             var platonWeb3 = new Web3("http://35.247.155.162:6789"); // dev net of platon
-            //var version = platonWeb3.GetProgramVersion();
-            //Console.WriteLine(version);
+            var version = platonWeb3.GetProgramVersion();
+            Console.WriteLine(version);
+            var chainId = platonWeb3.GetChainId();
+            Console.WriteLine(chainId);
             //var prove = platonWeb3.GetSchnorrNIZKProve();
             //Console.WriteLine(prove);
             //var config = platonWeb3.GetEconomicConfig();
