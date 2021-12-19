@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>&#20351;&#29992;PlatONet&#36830;&#25509;PlatON&#32593;&#32476;&#24182;&#26597;&#35810;&#22522;&#26412;&#20449;&#24687; </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="&#20351;&#29992;PlatONet&#36830;&#25509;PlatON&#32593;&#32476;&#24182;&#26597;&#35810;&#22522;&#26412;&#20449;&#24687; ">
+    <meta name="generator" content="docfx 2.58.9.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="使用platonet连接platon网络并查询基本信息">使用PlatONet连接PlatON网络并查询基本信息</h1>
+
+<p>查询网络基本信息是最常用，也最简单的操作。本节教程只涉及查询PlatON网络的公开信息，所以不需要使用账号，只需要一个PlatON网络的接入点即可。本教程只用到了Web3类。在使用Web3之前，先介绍一下Web3类：</p>
+<p>在PlatONet中，Web3类借鉴了Ethereum网络的Web3.js，但两者功能又不完全相同。在Ethereum网络的Web3.js中，Web3是网络的统一接口，里面包含了交易（Transaction）及账号（Account）等操作。但在PlatONet中，Web3类只负责调用PlatON网络的JSON RPC服务。Transaction 及 Account 相关的操作由其他类完成。更具体的信息请参照其他相关教程。</p>
+<p>所以，在使用Web3类之前，必须指定相应网络的接入点。PlatONet支持的网络有：</p>
+<ul>
+<li>PlatON主网</li>
+<li>PlatON开发网</li>
+<li>PlatON私有网络</li>
+<li>Alaya主网</li>
+<li>Alaya开发网</li>
+<li>Alaya私有网络</li>
+</ul>
+<p>PlatONet支持上述所有的网络。在接入网络之前，你需要一个接入点。你可以自建接入点（请参照：<a href="https://devdocs.platon.network/docs/zh-CN/Build_Private_Chain">私有网络 | PlatON</a>、<a href="https://devdocs.platon.network/docs/zh-CN/Become_PlatON_Main_Verification">成为主网节点 | PlatON</a>、<a href="https://devdocs.alaya.network/alaya-devdocs/zh-CN/Private_network">私有网络 | Alaya</a>、<a href="https://devdocs.alaya.network/alaya-devdocs/zh-CN/Run_a_fullnode">主网全节点部署 | Alaya</a>），你可以使用官方提供的公共接入点（请参照：<a href="https://devdocs.platon.network/docs/zh-CN/Join_Dev_Network">开发网络 | PlatON</a>、<a href="https://devdocs.alaya.network/alaya-devdocs/zh-CN/Join_the_dev_network">开发网络 | Alaya</a>）。本教程连接的网络为PlatON开发网，使用官方提供的公共接入点。</p>
+<p>选好网络，准备好接入点，查询工作就可以开始了。下述代码主要来自 <code>Basic.cs</code> ：</p>
+<pre><code class="lang-csharp">public static void Main(string[] args)
+{
+    var platonWeb3 = new Web3(&quot;http://47.241.98.219:6789&quot;); // dev net of platon
+    var version = platonWeb3.ClientVersion();
+    Console.WriteLine(version);
+    var netVersion = platonWeb3.NetVersion();
+    Console.WriteLine(netVersion);
+    Console.WriteLine(platonWeb3.NetListening());
+    Console.WriteLine(platonWeb3.NetPeerCount());
+    Console.WriteLine(platonWeb3.PlatonProtocolVersion());
+    Console.WriteLine(platonWeb3.PlatonSyncing());
+    Console.WriteLine(platonWeb3.PlatonGasPrice());
+    Console.WriteLine(platonWeb3.PlatonAccounts());
+    Console.WriteLine(platonWeb3.PlatonBlockNumber());
+    Console.WriteLine(platonWeb3.PlatonGetBalance(&quot;lat1awfagfqfxjcehr9kx26q9y6kg8j4wuyy9dswm5&quot;));
+    Console.WriteLine(platonWeb3.PlatonGetStorageAt(&quot;lat1awfagfqfxjcehr9kx26q9y6kg8j4wuyy9dswm5&quot;));
+    Console.WriteLine(platonWeb3.PlatonGetBlockTransactionCountByHash(&quot;0xba9436a521dd74a105457231c69dd195cd3da45aac26e50a6df45040b554327b&quot;));
+    Console.WriteLine(platonWeb3.PlatonGetTransactionCount(&quot;lat1l32ggvel6ndxxlprplz04c3vm2mq4wtgvugn36&quot;));
+    Console.WriteLine(platonWeb3.PlatonGetBlockTransactionCountByNumber());
+}
+</code></pre>
+<p>注意：上述代码无法在所有网站中都正常运行，这是由于不同网络的地址格式及相关Hash都不尽相同，请在使用前修改为相应网站的相关地址。</p>
+<p>本教程主要介绍了PlatONet所支持的网络及Web3的基本使用方法。本节的内容比较简单，只涉及了Web3类的使用方法，后续会介绍更复杂的使用方法。</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/RileyGe/PlatONet/blob/main/docs/articles/basic.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

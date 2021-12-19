@@ -50,7 +50,7 @@ namespace PlatONet
         [JsonProperty("TobeCanceled")]
         public string ToBeCanceled { get; set; }
         /// <summary>
-        /// （如果投票通过）生效块高（endVotingBlock + 20 + 4*250 < 生效块高 <= endVotingBlock + 20 + 10*250）
+        /// （如果投票通过）生效块高（endVotingBlock + 20 + 4*250 &lt; 生效块高 &lt;= endVotingBlock + 20 + 10*250）
         /// </summary>
         [JsonProperty("ActiveBlock")]
         public HexBigInteger ActiveBlock { get; set; }
@@ -195,7 +195,7 @@ namespace PlatONet
         /// <param name="endVotingRounds">投票共识轮数量。<br/>
         /// 说明：假设提交提案的交易，被打包进块时的共识轮序号时round1，则提案投票截止块高，
         /// 就是round1 + endVotingRounds这个共识轮的第230个块高（假设一个共识轮出块250，ppos揭榜提前20个块高，250，20都是可配置的 ），
-        /// 其中0 < endVotingRounds <= 4840（约为2周，实际论述根据配置可计算），且为整数）</param>
+        /// 其中0 &lt; endVotingRounds &lt;= 4840（约为2周，实际论述根据配置可计算），且为整数）</param>
         /// <returns>提案对象</returns>
         public static Proposal CreateSubmitVersionProposalParam(string verifier, string pIDID, HexBigInteger newVersion, HexBigInteger endVotingRounds)
         {
@@ -286,7 +286,7 @@ namespace PlatONet
             /// </summary>
             public string toBeCanceled;
             /// <summary>
-            /// （如果投票通过）生效块高（endVotingBlock + 20 + 4*250 < 生效块高 <= endVotingBlock + 20 + 10*250）
+            /// （如果投票通过）生效块高（endVotingBlock + 20 + 4*250 &lt; 生效块高 &lt;= endVotingBlock + 20 + 10*250）
             /// </summary>
             public HexBigInteger activeBlock;
             /// <summary>
@@ -389,7 +389,7 @@ namespace PlatONet
             /// <summary>
             /// 设置生效块高
             /// </summary>
-            /// <param name="activeBlock">（如果投票通过）生效块高（endVotingBlock + 20 + 4*250 < 生效块高 <= endVotingBlock + 20 + 10*250）</param>
+            /// <param name="activeBlock">（如果投票通过）生效块高（endVotingBlock + 20 + 4*250 &lt; 生效块高 &lt;= endVotingBlock + 20 + 10*250）</param>
             /// <returns><see cref="Builder"/>对象</returns>
             public Builder SetActiveBlock(HexBigInteger activeBlock)
             {
