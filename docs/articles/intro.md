@@ -15,3 +15,20 @@ Install-Package Algorand
 ```
 
 或使用Visual Studio的NuGet包管理器，搜索并安装`PlatONet`。
+
+## 3. 快速开始
+
+请参照文档。
+
+## 4. 文档
+
+文档地址：https://rileyge.github.io/platonet-documents/
+
+## 5. 参与本项目
+
+任何形式的参与本项目都是欢迎的，你可以：
+
+- 通过Issue可Discussions来参与本项目讨论
+- 通过Pull Request向本项目提交代码
+- 资助本项目：PlatON钱包地址：lat1vvtea8l8ve7xu0pncwgrgavdpkkql4e25jp6gk
+- 给我运行的节点投票，节点名[rileyge](https://scan.platon.network/node-detail?address=0x78d2f0cb6b261f41c17893dbec000010818ffba2b41732d4a6d16b8af36e05f51d19529adae4674a2538cd5622974c0e9d60eab10de42099c4a600c435c4714f)投票
