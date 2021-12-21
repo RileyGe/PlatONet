@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.RPC.Eth.DTOs;
-using Nethereum.Hex.HexTypes;
 
 namespace PlatONet
 {
@@ -266,13 +265,11 @@ namespace PlatONet
         /// <param name="address">查询地址</param>
         /// <param name="param"><see cref="BlockParameter"/>实例，表示查询截止块高</param>
         /// <returns>发送的交易个数</returns>
-        public HexBigInteger GetTransactionCount(string address, BlockParameter param = null)
+        public HexBigInteger GetTransactionCount(string address = null, BlockParameter param = null)
         {
-            param = param ?? BlockParameter.DEFAULT;
-            return ExcuteCommand<HexBigInteger>(ApiMplatonods.platon_getTransactionCount.ToString(), 
-                paramList: new object[] { 
-                    address, param.BlockNumber 
-                });
+            var result = GetTransactionCountAsync(address, param);
+            result.Wait();
+            return result.Result;
         }
         /// <summary>
         /// 根据地址查询该地址发送的交易个数--异步操作
@@ -280,13 +277,20 @@ namespace PlatONet
         /// <param name="address">查询地址</param>
         /// <param name="param"><see cref="BlockParameter"/>实例，表示查询截止块高</param>
         /// <returns>发送的交易个数</returns>
-        public Task<HexBigInteger> GetTransactionCountAsync(string address, BlockParameter param = null)
+        public async Task<HexBigInteger> GetTransactionCountAsync(string address = null, BlockParameter param = null)
         {
+            if (address == null || address.Length == 0)
+            {
+                if (Account == null)
+                    throw new Exception("Please initialize Account before GetTransactionCount without address.");
+                address = Account.GetAddress(Hrp).ToString();
+            }
             param = param ?? BlockParameter.DEFAULT;
-            return ExcuteCommandAsync<HexBigInteger>(ApiMplatonods.platon_getTransactionCount.ToString(), 
+            var result = await ExcuteCommandAsync<string>(ApiMplatonods.platon_getTransactionCount.ToString(), 
                 paramList: new object[] {
                     address, param.BlockNumber
                 });
+            return new HexBigInteger(result);
         }
         /// <summary>
         /// 根据区块块高，返回块高中的交易总数
@@ -367,6 +371,7 @@ namespace PlatONet
         public Task<string> SendTransactionAsync(Transaction trans)
         {
             if (Account == null) throw new Exception("Please initialize Account before SendTransaction.");
+            trans.ChainId = ChainId;
             trans.Sign(Account);
             return SendRawTransactionAsync(trans.SignedTransaction.ToHex());
         }

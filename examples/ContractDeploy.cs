@@ -1,8 +1,5 @@
-﻿using Nethereum.Hex.HexConvertors.Extensions;
-using Nethereum.Signer;
 using PlatONet;
 using System;
-using Nethereum.Hex.HexTypes;
 
 namespace examples
 {

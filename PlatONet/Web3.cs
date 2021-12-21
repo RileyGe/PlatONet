@@ -46,7 +46,7 @@ namespace PlatONet
         /// 如果初始化时不传入私钥，也可以使用<see cref="InitAccount(string)"/>或者<see cref="InitAccount(Account)"/>来重新传入私钥。</param>
         /// <param name="initChainIdAndHrp">是否自动填充ChainId和Hrp<br/> 
         /// 注：如果初始化时不进行ChainId和Hrp的填充，后续也可以使用<see cref="InitChainIdAndHrp"/>方法来进行填充。</param>
-        public Web3(string uri, string privateKey, bool initChainIdAndHrp)
+        public Web3(string uri, string privateKey, bool initChainIdAndHrp = true)
         {
             client = new RpcClient(new Uri(uri));
             InitPlatON(client);

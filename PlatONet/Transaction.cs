@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Numerics;
 using Nethereum.Hex.HexConvertors.Extensions;
-using Nethereum.Hex.HexTypes;
-using Nethereum.RLP;
 using Nethereum.Signer;
 
 

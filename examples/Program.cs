@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace examples
 {
@@ -9,6 +9,8 @@ namespace examples
             //Console.WriteLine(Convert.ToUInt64("0xaa", 16)); return;
             //Basic.Main(args); return;
             //Transfer.Main(args); return;
+            var hex = new PlatONet.HexBigInteger(100);
+            Console.WriteLine(hex.Value);
             Transfer2.Main(args); return;
             //ContractDeploy.Main(args); return;
             //ContractInteractive.Main(args); return;
@@ -16,6 +18,7 @@ namespace examples
             //Contract3.Main(args); return;
             //Contract4.Main(args); return;
             //PPOS.Main(args); return;
+
         }
     }
 }

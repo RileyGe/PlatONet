@@ -1,6 +1,5 @@
-﻿using Nethereum.Contracts;
+using Nethereum.Contracts;
 using Nethereum.Hex.HexConvertors.Extensions;
-using Nethereum.Hex.HexTypes;
 using Nethereum.JsonRpc.Client;
 using System.Threading.Tasks;
 
@@ -95,9 +94,9 @@ namespace PlatONet
         /// </summary>
         /// <param name="functionInput">当前方法执行所需要的参数</param>
         /// <returns>当前方法执行所需要的Gas</returns>
-        public Task<HexBigInteger> EstimateGasAsync(params object[] functionInput)
+        public async Task<HexBigInteger> EstimateGasAsync(params object[] functionInput)
         {
-            return _function.EstimateGasAsync(functionInput);
+            return (await _function.EstimateGasAsync(functionInput)) as HexBigInteger;
         }
         /// <summary>
         /// 估算当前方法执行所需要的Gas
@@ -122,7 +121,7 @@ namespace PlatONet
         /// <param name="value">随方法一起发送的lat/atp数量</param>
         /// <param name="functionInput">当前方法执行所需要的参数</param>
         /// <returns>当前方法执行所需要的Gas</returns>
-        public Task<HexBigInteger> EstimateGasAsync(string from, HexBigInteger gas,
+        public async Task<HexBigInteger> EstimateGasAsync(string from, HexBigInteger gas,
             HexBigInteger value, params object[] functionInput)
         {
             string etherAddress;
@@ -132,7 +131,7 @@ namespace PlatONet
             }                
             else 
                 etherAddress = (new Address(from)).ToEthereumAddress();
-            return _function.EstimateGasAsync(etherAddress, gas, value, functionInput);
+            return (await _function.EstimateGasAsync(etherAddress, gas, value, functionInput)) as HexBigInteger;
         }
         /// <summary>
         /// 发送交易<br/>
@@ -199,7 +198,7 @@ namespace PlatONet
             var sender = from == null || from.Length < 1 ?
                 _contract?.PlatON?.Account?.GetAddress()
                 : new Address(from);
-            if (value == null) value = 0.ToHexBigInteger();
+            if (value == null) value = new HexBigInteger(0);
             Task<HexBigInteger> gasResult = null, gasPriceResult = null, nonceResult = null;
 
             if (gas == null || gas.Value == 0) gasResult = EstimateGasAsync(functionInput);
