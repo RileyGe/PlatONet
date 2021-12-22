@@ -1,4 +1,4 @@
-﻿using PlatONet;
+using PlatONet;
 using System;
 
 namespace examples
@@ -8,8 +8,7 @@ namespace examples
         public static void Main(string[] args)
         {
             var privateKey = "d08baac64f52ae1b9c2ea559036650229f07f5d61d869dbb55562a9827fbaeb8";
-            var platonWeb3 = new Web3("http://35.247.155.162:6789");
-            platonWeb3.InitAccount(privateKey);
+            var w3 = new Web3("http://35.247.155.162:6789", privateKey);
             var abi = @"[
         {
           ""constant"": false,
@@ -49,14 +48,11 @@ namespace examples
         }
       ]";
             var contractAddress = new Address("lat1ts7u6ekl9zfmqw399wvnfh2gxc5gkjv34ymkvt");
-            var contract = platonWeb3.PlatON.GetContract(abi, contractAddress.ToString());
-
-            var result = contract.GetFunction("getName").CallAsync<string>();
-            result.Wait();
-            Console.WriteLine(result.Result);
-            var nameResult = contract.GetFunction("setName").SendTransactionAsync("abcabc");
-            nameResult.Wait();
-            Console.WriteLine(nameResult.Result);
+            var contract = w3.PlatON.GetContract(abi, contractAddress.ToString());
+            var result = contract.GetFunction("getName").Call<string>();
+            Console.WriteLine(result);
+            var nameResult = contract.GetFunction("setName").SendTransaction("abcabc");
+            Console.WriteLine(nameResult);
         }
     }
 }

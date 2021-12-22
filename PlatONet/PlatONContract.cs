@@ -96,7 +96,9 @@ namespace PlatONet
         /// <returns>当前方法执行所需要的Gas</returns>
         public async Task<HexBigInteger> EstimateGasAsync(params object[] functionInput)
         {
-            return (await _function.EstimateGasAsync(functionInput)) as HexBigInteger;
+            var result = await _function.EstimateGasAsync(functionInput);
+            return result.ToHexBigInteger();
+            //return (await _function.EstimateGasAsync(functionInput)) as HexBigInteger;
         }
         /// <summary>
         /// 估算当前方法执行所需要的Gas
@@ -192,34 +194,27 @@ namespace PlatONet
         /// <param name="nonce">nonce值</param>
         /// <param name="functionInput">当前方法执行所需要的参数</param>
         /// <returns>交易hash</returns>
-        public Task<string> SendTransactionAsync(string from, HexBigInteger gas, HexBigInteger gasPrice,
+        public async Task<string> SendTransactionAsync(string from, HexBigInteger gas, HexBigInteger gasPrice,
             HexBigInteger value, HexBigInteger nonce, params object[] functionInput)
         {            
             var sender = from == null || from.Length < 1 ?
                 _contract?.PlatON?.Account?.GetAddress()
                 : new Address(from);
             if (value == null) value = new HexBigInteger(0);
-            Task<HexBigInteger> gasResult = null, gasPriceResult = null, nonceResult = null;
+            //Task<HexBigInteger> gasResult = null, gasPriceResult = null, nonceResult = null;
 
-            if (gas == null || gas.Value == 0) gasResult = EstimateGasAsync(functionInput);
-            if (gasPrice == null || gasPrice.Value == 0) gasPriceResult = _contract.PlatON.GasPriceAsync();
-            if (nonce == null) nonceResult = _contract.PlatON.GetTransactionCountAsync(sender.ToString());
-            gasResult?.Wait();
-            gasPriceResult?.Wait();
-            nonceResult?.Wait();
-            gas = gasResult == null ? gas : gasResult.Result;
-            gasPrice = gasPriceResult == null ? gasPrice : gasPriceResult.Result;
-            nonce = nonceResult == null ? nonce : nonceResult.Result;
+            if (gas == null || gas.Value == 0) gas = await EstimateGasAsync(functionInput);
+            if (gasPrice == null || gasPrice.Value == 0) gasPrice = await _contract.PlatON.GasPriceAsync();
+            if (nonce == null) nonce = await _contract.PlatON.GetTransactionCountAsync(sender.ToString());
 
             var input = _function.CreateTransactionInput(sender?.ToEthereumAddress(), 
                 gas, gasPrice, value, functionInput: functionInput);
             var data = input.Data;
-            //var nonceNum = _contract.PlatON.GetTransactionCount(sender.ToString());
-            //var gasPrice = 1000000000;
+
             Transaction tx = new Transaction(_contract.Address.ToString(), value, nonce, 
                 gasPrice, gas, data, _contract.PlatON.ChainId);
             tx.Sign(_contract?.PlatON?.Account);
-            return _contract.PlatON.SendRawTransactionAsync(tx.SignedTransaction.ToHex());
+            return await _contract.PlatON.SendRawTransactionAsync(tx.SignedTransaction.ToHex());
         }
         /// <summary>
         /// 消息调用<br/>
