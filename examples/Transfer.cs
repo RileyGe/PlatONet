@@ -1,8 +1,5 @@
-﻿using PlatONet;
-using Nethereum.Hex.HexConvertors.Extensions;
-using Nethereum.Signer;
+using PlatONet;
 using System;
-using Nethereum.RLP;
 
 namespace examples
 {
@@ -10,29 +7,19 @@ namespace examples
     {
         public static void Main(string[] args)
         {
-            var platonWeb3 = new Web3("http://35.247.155.162:6789"); // dev net of platon
-            var address = new Address("lat1ljlf4myhux0zahfmlxf79wr7sl8u7pdey88dyp");
-            var fromAddress = new Address("lat1d4vw2qxjg5ldyaqceel3s6ykpljav6hcn0jfmh");
-            var amount = ((long)1e18).ToBytesForRLPEncoding();
-            var nonceNum = platonWeb3.PlatON.GetTransactionCount(fromAddress.ToString());
-            var nonce = nonceNum.ToHexByteArray();
-            var gasPrice = 1000000000.ToBytesForRLPEncoding();
-            var gasLimit = 21000.ToBytesForRLPEncoding();
-            var data = new byte[0];
-            
-            var chainId = 210309.ToBytesForRLPEncoding();
-            
-
-            //var tx2 = new Transaction(nonce, gasPrice, gasLimit, address.Bytes, amount, data, chainId);
-
-            var tx = new LegacyTransactionChainId(nonce, gasPrice, gasLimit, address.Bytes, amount, data, chainId);
-            //var tx = new Transaction();
-            // private key for account lat1d4vw2qxjg5ldyaqceel3s6ykpljav6hcn0jfmh
             var privateKey = "d08baac64f52ae1b9c2ea559036650229f07f5d61d869dbb55562a9827fbaeb8";
-            var platonKey = new EthECKey(privateKey.HexToByteArray(), true); 
-            tx.Sign(platonKey);            
-            var result = platonWeb3.PlatON.SendRawTransaction(tx.GetRLPEncoded().ToHex());
-            Console.WriteLine(result);            
+            var w3 = new Web3("http://35.247.155.162:6789", privateKey); // dev net of platon
+            var toAddress = "lat1ljlf4myhux0zahfmlxf79wr7sl8u7pdey88dyp";
+            var amount = new HexBigInteger((ulong)1e18);
+            var gasPrice = new HexBigInteger((ulong)1e9);
+            var gasLimit = new HexBigInteger(21000);            
+            var nonceNum = w3.PlatON.GetTransactionCount();
+
+            // 构建交易
+            var tx = new Transaction(toAddress, amount, nonceNum, gasPrice, gasLimit);
+            //发送交易
+            var result = w3.PlatON.SendTransaction(tx);
+            Console.WriteLine(result);
         }
     }
 }
