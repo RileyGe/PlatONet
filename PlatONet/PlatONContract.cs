@@ -98,7 +98,6 @@ namespace PlatONet
         {
             var result = await _function.EstimateGasAsync(functionInput);
             return result.ToHexBigInteger();
-            //return (await _function.EstimateGasAsync(functionInput)) as HexBigInteger;
         }
         /// <summary>
         /// 估算当前方法执行所需要的Gas
@@ -133,7 +132,8 @@ namespace PlatONet
             }                
             else 
                 etherAddress = (new Address(from)).ToEthereumAddress();
-            return (await _function.EstimateGasAsync(etherAddress, gas, value, functionInput)) as HexBigInteger;
+            var newGas = await _function.EstimateGasAsync(etherAddress, gas, value, functionInput);
+            return newGas.ToHexBigInteger();
         }
         /// <summary>
         /// 发送交易<br/>
