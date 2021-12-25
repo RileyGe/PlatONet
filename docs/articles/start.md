@@ -11,7 +11,7 @@ PlatONet符合.net standard 2.0标准，可以广泛的应用于Windows、Mac、
 打开NuGet命令行工具，运行以下命令：
 
 ```powershell
-Install-Package P
+Install-Package PlatONet
 ```
 
 或使用Visual Studio的NuGet包管理器，搜索并安装`PlatONet`。

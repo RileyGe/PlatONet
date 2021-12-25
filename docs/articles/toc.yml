@@ -1,4 +1,12 @@
-- name: SDK安装及网络参数查询
+- name: 基本介绍
+  href: intro.md
+- name: 快速开始
+  href: start.md
+- name: 查询操作
+  href: query.md
+- name: 账号、地址及转账操作
   href: basic.md
 - name: 智能合约操作
   href: contract.md
+- name: 内置合约操作
+  href: ppos.md

@@ -1,45 +1,62 @@
-# 使用PlatONet连接PlatON网络并查询基本信息
+﻿# 账号、地址及转账操作
 
-查询网络基本信息是最常用，也最简单的操作。本节教程只涉及查询PlatON网络的公开信息，所以不需要使用账号，只需要一个PlatON网络的接入点即可。本教程只用到了Web3类。在使用Web3之前，先介绍一下Web3类：
+本篇会介绍账号的相关知识及账号生成的相关操作。本教程分为两大部分，第一部分为账号的基本概念，在这里你能学到一些相关账号的基本概念，以及一些安全方面的建议。如果你对此部分内容比较熟悉或不感兴趣，可以直接跳过第一部分，进入第二部分账号生成。在第二部分中主要讲操作，本教程会带领大家用PlatONet成账号，参与PlatON/Alaya网络交易。
 
-在PlatONet中，Web3类借鉴了Ethereum网络的Web3.js，但两者功能又不完全相同。在Ethereum网络的Web3.js中，Web3是网络的统一接口，里面包含了交易（Transaction）及账号（Account）等操作。但在PlatONet中，Web3类只负责调用PlatON网络的JSON RPC服务。Transaction 及 Account 相关的操作由其他类完成。更具体的信息请参照其他相关教程。
+## 1. 基本概念
 
-所以，在使用Web3类之前，必须指定相应网络的接入点。PlatONet支持的网络有：
+如果你是第一次接触区块链，那么PlatON/Alaya的账号（Account）的概念对你来说可能难以理解。Alaya的账号与中心化的账号有很大不同。无论你在银行还是其他中心化的应用中，如微信，支付宝等，你都要准备好资料并向中心化的组织来提交你的资料，你才能开户一个账号。但在PlatON/Alaya中，你可以自行生成一个公私钥对，如果你将你的账号地址（Address）分享给大家，大家就可以与你的账号发生交互了。
 
-- PlatON主网
-- PlatON开发网
-- PlatON私有网络
-- Alaya主网
-- Alaya开发网
-- Alaya私有网络
+这里已经出现了账号、公钥、私钥及地址等概念，不要着急，下面我们就慢慢的一一解释这些概念。我们先看下面一张图片：
 
-PlatONet支持上述所有的网络。在接入网络之前，你需要一个接入点。你可以自建接入点（请参照：[私有网络 | PlatON](https://devdocs.platon.network/docs/zh-CN/Build_Private_Chain)、[成为主网节点 | PlatON](https://devdocs.platon.network/docs/zh-CN/Become_PlatON_Main_Verification)、[私有网络 | Alaya](https://devdocs.alaya.network/alaya-devdocs/zh-CN/Private_network)、[主网全节点部署 | Alaya](https://devdocs.alaya.network/alaya-devdocs/zh-CN/Run_a_fullnode)），你可以使用官方提供的公共接入点（请参照：[开发网络 | PlatON](https://devdocs.platon.network/docs/zh-CN/Join_Dev_Network)、[开发网络 | Alaya](https://devdocs.alaya.network/alaya-devdocs/zh-CN/Join_the_dev_network)）。本教程连接的网络为PlatON开发网，使用官方提供的公共接入点。
+![Account](C:\Users\RLGE\OneDrive - whu.edu.cn\blockchain\alaya及platon\教程\账号及账号生成\account.png)
 
-选好网络，准备好接入点，查询工作就可以开始了。下述代码主要来自 `Basic.cs` ：
+### 1.1. 账户（Accounts）
 
-```csharp
-public static void Main(string[] args)
-{
-    var platonWeb3 = new Web3("http://47.241.98.219:6789"); // dev net of platon
-    var version = platonWeb3.ClientVersion();
-    Console.WriteLine(version);
-    var netVersion = platonWeb3.NetVersion();
-    Console.WriteLine(netVersion);
-    Console.WriteLine(platonWeb3.NetListening());
-    Console.WriteLine(platonWeb3.NetPeerCount());
-    Console.WriteLine(platonWeb3.PlatonProtocolVersion());
-    Console.WriteLine(platonWeb3.PlatonSyncing());
-    Console.WriteLine(platonWeb3.PlatonGasPrice());
-    Console.WriteLine(platonWeb3.PlatonAccounts());
-    Console.WriteLine(platonWeb3.PlatonBlockNumber());
-    Console.WriteLine(platonWeb3.PlatonGetBalance("lat1awfagfqfxjcehr9kx26q9y6kg8j4wuyy9dswm5"));
-    Console.WriteLine(platonWeb3.PlatonGetStorageAt("lat1awfagfqfxjcehr9kx26q9y6kg8j4wuyy9dswm5"));
-    Console.WriteLine(platonWeb3.PlatonGetBlockTransactionCountByHash("0xba9436a521dd74a105457231c69dd195cd3da45aac26e50a6df45040b554327b"));
-    Console.WriteLine(platonWeb3.PlatonGetTransactionCount("lat1l32ggvel6ndxxlprplz04c3vm2mq4wtgvugn36"));
-    Console.WriteLine(platonWeb3.PlatonGetBlockTransactionCountByNumber());
-}
-```
+在进行正式解释之前，我们先做一下类比。PlatON/Alaya中的**普通账号**和银行账号有很大的相似之外。你的银行账号里面会记录你账号上有多少钱，进行过什么操作等。PlatON/Alaya中也一样，PlatON/Alaya网络会维护一棵状态树，该树以账号地址为索引，存储账号的余额（balance）、交易计数（nonce）等。
 
-注意：上述代码无法在所有网站中都正常运行，这是由于不同网络的地址格式及相关Hash都不尽相同，请在使用前修改为相应网站的相关地址。
+PlatON/Alaya还有另外一种账号是**合约账号**，通常我们也直接称之为合约。合约账号和普通账号的信息都存储于同一棵树中，合约也有余额（balance）、交易计数（nonce）等，同时他还具有代码等。
 
-本教程主要介绍了PlatONet所支持的网络及Web3的基本使用方法。本节的内容比较简单，只涉及了Web3类的使用方法，后续会介绍更复杂的使用方法。
+### 1.2. 地址（Address）
+
+如果类比一下，地址就是你银行账户的银行卡号。在PlatON/Alaya网络中，一个PlatON/Alaya地址就代表着一个账户，地址是账户的标识。也就是如我们1.1中所说，PlatON/Alaya中的状态树是以地址为索引的。
+
+与银行账号不同的是，如果别人知道了你的账号地址，那么任何人都可以通过你的地址查询到你的所有交易。
+
+不知大家发现没有，在PlatON网络中，所有地址都是以lat1开头的（在Alaya网络中以atp1开头），这是为什么呢？这是由于为了提高地址的可读性，PlatON/Alaya网络将原地址（一般使用16进制表示，如常见的0x开头的以太坊地址）经过Bech32编码，形成了现有地址。
+
+>Bech32最早出现在 Bitcoin 中，其组成如下：
+>
+>hrp(human-readable part)：可读前缀
+>seperator：分隔符，永远是“1”。
+>data part：数据部分，包含小写字母和数字。但数据部分不可包含字符“1”（被用作了分隔符），“b”、“i”、“o”（可读性不强，容易与其他字符混淆）。这样数据部分每一位都有32位可能取值。
+>checksum：校验部分。校验部分为地址的最后 6 位，可用于校验该字符串的正确性。
+>
+>下图为地址组成部分示意图：
+>
+>![地址组成部分](C:\Users\RLGE\OneDrive - whu.edu.cn\blockchain\alaya及platon\教程\账号及账号生成\18.png)
+
+### 1.3. 私钥（Private Key）和公钥（Public Key）
+
+私钥和公钥是非对称加密中的概念。在非对称加密中，我们通过某种算法来生成一个公私钥对，这个公私钥对有以下特征：
+
+- 知道公钥不可能（或者是非常难）推算出私钥，但知道私钥很容易推算出私钥。
+- 用公钥进行加密后的数据只有使用私钥才能对其解密。
+- 用私钥对数据进行签名后用公钥可以验证签名的正确性。
+
+那么公私钥前面的账号和地址有什么关系呢？先说结论：
+
+- 私钥的持有者对账号有所有权，可以对账号进行任何PlatON/Alaya网络支持的操作。
+- 地址是由公钥经Hash操作得到的。也就是说**由公钥可以容易的获得地址，但有地址却无法推算出公钥**。
+
+> 安全提醒：
+>
+> 1. 由于私钥的持有者可以对账号进行任何Alaya支持的操作，所以如果你的私钥丢失，那么你将完全的失去你的账号，任何人对此都无能为力。
+> 2. 账号进行过发送操作，其公钥就会暴露。从某种角度来讲，其安全性确实降低了。但在现有的技术水平下，公钥暴露完全造成的安全影响非常微小。到目前为止，所有区块链项目都没有因为公钥暴露而产生安全问题。
+
+### 1.4. 助记词
+
+助记词从名字就能看出来是干嘛的。之前说过私钥非常非常重要，但私钥又非常非常长（否则容易被破解），私钥也完全没有任何顺序，没有任何意义（否则容易被人破解）。所以为了帮助大家更好的记忆私钥，大家会有一些常用的单词，来代表私钥，这样私钥就容易记录一些了。
+
+也就是说助记词是可以和私钥相互转化，但同时又比较好记的一种私钥保存形式。私钥与助记词的转化一般是周边工具提供的功能，而不是区块链本身的功能。
+
+好，基本概念就讲这么多，下面就开始实操。
