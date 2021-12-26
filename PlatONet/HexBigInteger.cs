@@ -10,16 +10,36 @@ namespace PlatONet
     [JsonConverter(typeof(HexBigIntegerJsonConverter))]
     public class HexBigInteger : Nethereum.Hex.HexTypes.HexRPCType<BigInteger>
     {
+        /// <summary>
+        /// 使用16进制字符串初始化一个<see cref="HexBigInteger"/>对象
+        /// </summary>
+        /// <param name="hex">16进制字符串</param>
         public HexBigInteger(string hex) : 
             base(new Nethereum.Hex.HexConvertors.HexBigIntegerBigEndianConvertor(), hex)
         {
         }
+        /// <summary>
+        /// 使用<see cref="BigInteger"/>对象初始化一个<see cref="HexBigInteger"/>对象
+        /// </summary>
+        /// <param name="value"><see cref="BigInteger"/>对象</param>
         public HexBigInteger(BigInteger value) : 
             base(value, new Nethereum.Hex.HexConvertors.HexBigIntegerBigEndianConvertor())
         {
         }
+        /// <summary>
+        /// 使用<see cref="long"/>类型的数字初始化一个<see cref="HexBigInteger"/>对象
+        /// </summary>
+        /// <param name="value"><see cref="long"/>类型的数字</param>
         public HexBigInteger(long value) : this(value.ToString("X")) { }
+        /// <summary>
+        /// 使用<see cref="ulong"/>类型的数字初始化一个<see cref="HexBigInteger"/>对象
+        /// </summary>
+        /// <param name="value"><see cref="ulong"/>类型的数字</param>
         public HexBigInteger(ulong value) : this(value.ToString("X")) { }
+        /// <summary>
+        /// 使用<see cref="Nethereum.Hex.HexTypes.HexBigInteger"/>对象字初始化一个<see cref="HexBigInteger"/>对象
+        /// </summary>
+        /// <param name="value"><see cref="Nethereum.Hex.HexTypes.HexBigInteger"/>对象</param>
         public HexBigInteger(Nethereum.Hex.HexTypes.HexBigInteger value) : this(value.Value) { }
         /// <summary>
         /// 与Nethereum的类型HexBigInteger的隐式转换
@@ -50,28 +70,49 @@ namespace PlatONet
             return HexValue;
         }
     }
+    /// <summary>
+    /// <see cref="HexBigInteger"/>与常见数字类型的快速转换
+    /// </summary>
     public static class HexBigIntegerNumberExtensions
     {
+        /// <summary>
+        /// <see cref="ulong"/>类型到<see cref="HexBigInteger"/>类型转换
+        /// </summary>
+        /// <param name="val">原始值</param>
+        /// <returns><see cref="HexBigInteger"/>对象</returns>
         public static HexBigInteger ToHexBigInteger(this ulong val)
         {
             return new HexBigInteger(val);
         }
-
+        /// <summary>
+        /// <see cref="long"/>类型到<see cref="HexBigInteger"/>类型转换
+        /// </summary>
+        /// <param name="val">原始值</param>
+        /// <returns><see cref="HexBigInteger"/>对象</returns>
         public static HexBigInteger ToHexBigInteger(this long val)
         {
             return new HexBigInteger(val);
         }
-
+        /// <summary>
+        /// <see cref="BigInteger"/>类型到<see cref="HexBigInteger"/>类型转换
+        /// </summary>
+        /// <param name="val">原始值</param>
+        /// <returns><see cref="HexBigInteger"/>对象</returns>
         public static HexBigInteger ToHexBigInteger(this BigInteger val)
         {
             return new HexBigInteger(val);
         }
+        /// <summary>
+        /// <see cref="Nethereum.Hex.HexTypes.HexBigInteger"/>类型到<see cref="HexBigInteger"/>类型转换
+        /// </summary>
+        /// <param name="val">原始值</param>
+        /// <returns><see cref="HexBigInteger"/>对象</returns>
         public static HexBigInteger ToHexBigInteger(this Nethereum.Hex.HexTypes.HexBigInteger val)
         {
             return new HexBigInteger(val);
         }
     }
-    public class HexBigIntegerJsonConverter : JsonConverter
+    internal class HexBigIntegerJsonConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {

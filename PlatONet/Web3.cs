@@ -295,7 +295,8 @@ namespace PlatONet
         //}
     }
     /// <summary>
-    /// https://eth.wiki/json-rpc/API#the-default-block-parameter
+    /// 块高信息
+    /// 更多请参照：https://eth.wiki/json-rpc/API#the-default-block-parameter
     /// </summary>
     public class BlockParameter
     {

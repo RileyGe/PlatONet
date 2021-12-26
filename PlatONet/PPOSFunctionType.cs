@@ -1,5 +1,8 @@
 ﻿namespace PlatONet
 {
+    /// <summary>
+    /// 系统合约方法类型码
+    /// </summary>
     public class PPOSFunctionType
     {
         /// <summary>

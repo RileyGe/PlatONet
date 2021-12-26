@@ -1,6 +1,6 @@
 ﻿namespace PlatONet
 {
-    public enum ApiMplatonods
+    internal enum ApiMplatonods
     {
         net_listening,
         net_version,

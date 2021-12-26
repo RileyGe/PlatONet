@@ -1,15 +1,20 @@
 using System.Collections.Generic;
 using System.Numerics;
-using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Signer;
 
 
 namespace PlatONet
 {
+    /// <summary>
+    /// 交易信息
+    /// </summary>
     public class Transaction
     {
         private bool paramsChanged = true;
         private Address _to;
+        /// <summary>
+        /// 交易发送到的地址
+        /// </summary>
         public Address To { 
             get {
                 return _to;
@@ -32,6 +37,9 @@ namespace PlatONet
             } 
         }
         private HexBigInteger _amount;
+        /// <summary>
+        /// 交易中包含的lat数量（单位VON）
+        /// </summary>
         public HexBigInteger Amount {
             get {
                 return _amount;
@@ -54,6 +62,9 @@ namespace PlatONet
             } 
         }
         private HexBigInteger _nonce;
+        /// <summary>
+        /// 交易的索引
+        /// </summary>
         public HexBigInteger Nonce {
             get {
                 return _nonce;
@@ -76,6 +87,9 @@ namespace PlatONet
             } 
         }
         private HexBigInteger _gasPrice;
+        /// <summary>
+        /// 交易的汽油价格
+        /// </summary>
         public HexBigInteger GasPrice {
             get
             {
@@ -100,6 +114,9 @@ namespace PlatONet
             }
         }
         private HexBigInteger _gasLimit;
+        /// <summary>
+        /// 交易最多花费的汽油数量上限
+        /// </summary>
         public HexBigInteger GasLimit {
             get
             {
@@ -124,6 +141,9 @@ namespace PlatONet
             }
         }
         private string _data;
+        /// <summary>
+        /// 交易包含的数据
+        /// </summary>
         public string Data {
             get
             {
@@ -147,6 +167,9 @@ namespace PlatONet
             }
         }
         private HexBigInteger _chainId;
+        /// <summary>
+        /// 交易的链ID
+        /// </summary>
         public HexBigInteger ChainId {
             get
             {
@@ -172,6 +195,9 @@ namespace PlatONet
         }
         private LegacyTransactionChainId rawTranction;
         private byte[] _signedTransaction;
+        /// <summary>
+        /// 签名后的交易
+        /// </summary>
         public byte[] SignedTransaction
         {
             get 
@@ -183,15 +209,16 @@ namespace PlatONet
                 _signedTransaction = value;
             }
         }
-        //public Transaction(byte[] receiveAddress = null, byte[] value = null, byte[] nonce = null, byte[] gasPrice = null, byte[] gasLimit = null, 
-        //    byte[] data = null, byte[] chainId = null) : base(nonce, gasPrice, gasLimit, receiveAddress, value, data, chainId)
-        //{
-            
-        //}
-        //public Transaction(string to, ulong amount = 0, ulong nonce = 0, ulong gasPrice = 0, ulong gasLimit = 0,
-        //    string data = "", ulong chainId = 210309) : this(to, amount.ToHexBigInteger(), nonce.ToHexBigInteger(),
-        //        gasPrice.ToHexBigInteger(), gasLimit.ToHexBigInteger(), data, chainId.ToHexBigInteger())
-        //{ }
+        /// <summary>
+        /// 初始化交易
+        /// </summary>
+        /// <param name="to">交易发送到的地址</param>
+        /// <param name="amount">交易中包含的lat数量（单位VON）</param>
+        /// <param name="nonce">交易的索引</param>
+        /// <param name="gasPrice">交易的汽油价格</param>
+        /// <param name="gasLimit">交易最多花费的汽油数量上限</param>
+        /// <param name="data">交易包含的数据</param>
+        /// <param name="chainId">交易的链ID</param>
         public Transaction(string to = null, HexBigInteger amount = null, HexBigInteger nonce = null, HexBigInteger gasPrice = null, 
             HexBigInteger gasLimit = null, string data = null, HexBigInteger chainId = null)
         {
@@ -205,7 +232,7 @@ namespace PlatONet
             _data = data;
             _chainId = chainId;
         }
-        public EthECDSASignature Sign(EthECKey key)
+        internal EthECDSASignature Sign(EthECKey key)
         {
             if (paramsChanged)
                rawTranction = new LegacyTransactionChainId(_to?.Bytes?.ToHex(), _amount ?? new BigInteger(0), 
@@ -215,26 +242,16 @@ namespace PlatONet
             _signedTransaction = rawTranction.GetRLPEncoded();            
             return rawTranction.Signature;
         }
+        /// <summary>
+        /// 对交易进行签名
+        /// </summary>
+        /// <param name="account">签名使用的<see cref="Account"/></param>
+        /// <returns>签名后的交易信息</returns>
         public EthECDSASignature Sign(Account account)
         {
             return account.Sign(this);
         }
-        //public List<object> ToParamsList()
-        //{
-        //    return new List<object>()
-        //    {
-        //        Nonce.ToHex(),
-        //        GasPrice.ToHex(),
-        //        GasLimit.ToHex(),
-        //        ReceiveAddress.ToHex(),
-        //        Value.ToHex(),
-        //        ToHex(Data),
-        //        ChainId.ToHex(),
-        //        RHash.ToHex(),
-        //        SHash.ToHex()
-        //    };
-        //}
-        public Dictionary<string, string> ToDict()
+        internal Dictionary<string, string> ToDict()
         {
             Dictionary<string, string> data = new Dictionary<string, string>();
 
@@ -250,9 +267,5 @@ namespace PlatONet
             if (ChainId != null && ChainId.Value > 0) data.Add("chainId", ChainId.HexValue);
             return data;
         }
-        //public static Transaction GetPaymentTransaction(string to, long amount, long gasPrice = 0, long gasLimit = 0, string msg = "", long nonce = -1, long chainId = 210309)
-        //{
-
-        //}
     }
 }

@@ -79,7 +79,7 @@ namespace examples
             tx.Data = data;
 
             //var privateKey = "d08baac64f52ae1b9c2ea559036650229f07f5d61d869dbb55562a9827fbaeb8";
-            var platonKey = new EthECKey(privateKey.HexToByteArray(), true);
+            var platonKey = new Account(privateKey);
             tx.Sign(platonKey);
             var result2 = platonWeb3.PlatON.SendRawTransaction(tx.SignedTransaction.ToHex());
         }
