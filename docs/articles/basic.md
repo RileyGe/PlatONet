@@ -60,3 +60,52 @@ PlatON/Alaya还有另外一种账号是**合约账号**，通常我们也直接�
 也就是说助记词是可以和私钥相互转化，但同时又比较好记的一种私钥保存形式。私钥与助记词的转化一般是周边工具提供的功能，而不是区块链本身的功能。
 
 好，基本概念就讲这么多，下面就开始实操。
+
+## 2. 转账操作
+
+转账操作虽然看起来简单，但实际上是一个非常完整的进行区块链交易的过程，通过转账操作，开发者基本上就可以掌握Account类、Transaction类、Web3类、PlatON类的最基本用法。Web3类和PlatON在教程《查询操作》中已经进行过基本介绍，这里就再介绍一下Account类及Transaction类：
+
+- **Account**：账号相关操作，最核心的功能是签名操作。而且还在此类中通过静态方法的形式提供了与助记词相关的操作。下面的示例代码中会演示如何使用私钥、助记词生成账号，也会展示如何生成随机账号。
+- **Transaction**：交易相关操作，核心功能是构建不同的交易。
+
+还是从代码开始讲解：
+
+```csharp
+using PlatONet;
+using System;
+
+namespace examples
+{
+    public class Transfer
+    {
+        public static void Main(string[] args)
+        {
+            var mneno = Account.GenerateMnemonic(); // 9
+            var act = Account.FromMnemonic(mneno); // 10
+            var privateKey = "d08baac64f52ae1b9c2ea559036650229f07f5d61d869dbb55562a9827fbaeb8";
+            var act2 = new Account(privateKey); // 12
+            var act3 = new Account(); // 13
+            var w3 = new Web3("http://35.247.155.162:6789", privateKey); // 14
+            var toAddress = "lat1ljlf4myhux0zahfmlxf79wr7sl8u7pdey88dyp";
+            var amount = new HexBigInteger((ulong)1e18);
+            var gasPrice = new HexBigInteger((ulong)1e9);
+            var gasLimit = new HexBigInteger(21000);            
+            var nonceNum = w3.PlatON.GetTransactionCount();
+
+            // 构建交易
+            var tx = new Transaction(toAddress, amount, nonceNum, gasPrice, gasLimit); // 22
+            //发送交易
+            var result = w3.PlatON.SendTransaction(tx); // 24
+            Console.WriteLine(result);
+        }
+    }
+}
+```
+
+- 第9行：如何生成一个随机的助记词。
+- 第10、12、13行：如果通过助记词、私钥、随机生成账号。
+- 第14行：在构建Web3对象时，不仅传入的接入点相关信息，还传入的账号的私钥。这样就可以让Web3对象对账号进行管理，就可以在第24行发送交易时，自动对交易进行签名。如果在构建Web3对象时没有传入私钥，则也可以通过`w3.InitAccount`方法重新初始化账号，与在构建Web3对象时传入私钥是一样的效果。
+- 第22行：构建交易。
+- 第24行：发送交易。`w3`对账号进行了自动管理，所以这里不需要签名。否则需要先调用`tx.Sign(account)`方法，然后使用`w3.PlatON.SendRawTransaction(tx.SignedTransaction.ToHex())`发送交易。
+
+转账交易是区块链中最基础、使用最广泛的操作，以上就是使用PlatONet进行转账的操作方法。

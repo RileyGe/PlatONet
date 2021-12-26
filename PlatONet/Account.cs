@@ -1,8 +1,13 @@
-﻿using Nethereum.Hex.HexConvertors.Extensions;
+using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Signer;
 using System.Linq;
 using System.Text;
 using PlatONet.Crypto;
+using Nethereum.HdWallet;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Parameters;
+using NBitcoin;
 
 namespace PlatONet
 {
@@ -18,7 +23,43 @@ namespace PlatONet
         /// <param name="privateKeyHex">私钥</param>
         public Account(string privateKeyHex)
         {
-            _key = new EthECKey(privateKeyHex.HexToByteArray(), true);            
+            _key = new EthECKey(privateKeyHex.HexToByteArray(), true);
+        }
+        /// <summary>
+        /// 产生一个随机的账号
+        /// </summary>
+        public Account()
+        {
+            CreateAccountFromRandom(new SecureRandom());
+        }
+        /// <summary>
+        /// 使用助记词生成一个账号
+        /// </summary>
+        /// <param name="mnenonic">助记词</param>
+        /// <param name="index">索引，从0开始</param>
+        /// <returns>账号</returns>
+        public static Account FromMnemonic(string mnenonic, int index = 0)
+        {
+            var wallet = new Wallet(mnenonic, null, "m/44'/206'/0'/0/x");
+            var account = wallet.GetAccount(index);
+            return new Account(account.PrivateKey);
+        }
+        /// <summary>
+        /// 生成一个随机的助记词
+        /// </summary>
+        /// <returns>助记词</returns>
+        public static string GenerateMnemonic()
+        {
+            Mnemonic mnemo = new Mnemonic(Wordlist.English, WordCount.Twelve);
+            return mnemo.ToString();
+        }
+        private void CreateAccountFromRandom(SecureRandom srandom)
+        {
+            Ed25519KeyPairGenerator keyPairGenerator = new Ed25519KeyPairGenerator();
+            keyPairGenerator.Init(new Ed25519KeyGenerationParameters(srandom));
+            var privateKeyPair = keyPairGenerator.GenerateKeyPair();
+            var privateKey = privateKeyPair.Private as Ed25519PrivateKeyParameters;
+            _key = new EthECKey(privateKey.GetEncoded(), true);
         }
         /// <summary>
         /// 账号的公钥

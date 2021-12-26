@@ -1,5 +1,4 @@
 using PlatONet;
-using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Signer;
 using System;
 using Nethereum.RLP;

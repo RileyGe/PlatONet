@@ -47,8 +47,8 @@ namespace examples
           ""type"": ""function""
         }
       ]";
-            var contractAddress = new Address("lat1ts7u6ekl9zfmqw399wvnfh2gxc5gkjv34ymkvt");
-            var contract = w3.PlatON.GetContract(abi, contractAddress.ToString());
+            var contractAddress = "lat1ts7u6ekl9zfmqw399wvnfh2gxc5gkjv34ymkvt";
+            var contract = w3.PlatON.GetContract(abi, contractAddress);
             var result = contract.GetFunction("getName").Call<string>();
             Console.WriteLine(result);
             var nameResult = contract.GetFunction("setName").SendTransaction("abcabc");
