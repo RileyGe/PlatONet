@@ -30,16 +30,15 @@ PlatONet主要依赖于BouncyCastle和Nethereum两个开源项目。
 
 NuGet包会在第一完整功能版本1.0后开始提供，在项目版本没有达到1.0之前，请使用前文所述的**从源码编译使用**章节中所述的方法使用本项目。
 
-## 3. 使用教程
+## 3. 文档
 
-1. [使用PlatONet连接PlatON网络并查询基本信息](tutorials/basic.md)
+文档地址：https://rileyge.github.io/platonet-documents/
 
+## 4. 参与本项目
 
+任何形式的参与本项目都是欢迎的，你可以：
 
-PlatONet最核心的部分由三个类构成：Address、Account、Web3。这三个类分别介绍如下：
-
-Address：地址类，存储地址并包含相关与地址相关的操作。
-
-Account：账户信息，存储私钥相关内容，并进行相应的操作。
-
-Web3：操作
+- 通过Issue可Discussions来参与本项目讨论
+- 通过Pull Request向本项目提交代码
+- 资助本项目：PlatON钱包地址：lat1vvtea8l8ve7xu0pncwgrgavdpkkql4e25jp6gk
+- 给我运行的节点投票，节点名[rileyge](https://scan.platon.network/node-detail?address=0x78d2f0cb6b261f41c17893dbec000010818ffba2b41732d4a6d16b8af36e05f51d19529adae4674a2538cd5622974c0e9d60eab10de42099c4a600c435c4714f)投票
