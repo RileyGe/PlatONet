@@ -28,7 +28,13 @@ PlatONet主要依赖于BouncyCastle和Nethereum两个开源项目。
 
 ## 2. 安装NuGet包
 
-NuGet包会在第一完整功能版本1.0后开始提供，在项目版本没有达到1.0之前，请使用前文所述的**从源码编译使用**章节中所述的方法使用本项目。
+打开Nuget命令行工具，运行以下命令：
+
+```powershell
+Install-Package PlatONet
+```
+
+或使用Visual Studio的NuGet包管理器，搜索并安装`PlatONet`。
 
 ## 3. 文档
 
